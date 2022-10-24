@@ -1,6 +1,12 @@
 package model;
 
-import exceptions.*;
+import com.google.gson.Gson;
+import exceptions.InvalidOperandException;
+import exceptions.NoSuchCountryException;
+import exceptions.WrongFormatException;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class Control {
@@ -23,7 +29,7 @@ public class Control {
         String[] addable = toAdd.split(" ");
 
         if (addable[0].equals("INSERT")&&addable[1].equals("INTO")){
-            if(addable[2].split("(")[0].equals("countries")&&(addable[2].split("(")[1] + addable[3] + addable[4] +  addable[5].split(")")[0]).equals("id,name,population,countryCode")&&addable[6].equals("VALUES")){
+            if(addable[2].split("\\(")[0].equals("countries")&&(addable[2].split("\\(")[1] + addable[3] + addable[4] +  addable[5].split("\\)")[0]).equals("id,name,population,countryCode")&&addable[6].equals("VALUES")){
                 boolean check = true;
                 for(int i=7; i<addable.length&&(check=((addable[i].startsWith("'")&&addable[i].endsWith("'"))||i==9)); i++){
                     addable[i].replaceAll("'", "");
@@ -33,7 +39,7 @@ public class Control {
                 }
                 else throw new WrongFormatException("Values specified do not match values required.");
             }
-            else if (addable[2].split("(")[0].equals("cities")&&(addable[2].split("(")[1] + addable[3] + addable[4] +  addable[5].split(")")[0]).equals("id,name,countryID,population")&&addable[6].equals("VALUES")){
+            else if (addable[2].split("\\(")[0].equals("cities")&&(addable[2].split("\\(")[1] + addable[3] + addable[4] +  addable[5].split("\\)")[0]).equals("id,name,countryID,population")&&addable[6].equals("VALUES")){
                 boolean check = true;
                 for(int i=7; i<addable.length&&(check=((addable[i].startsWith("'")&&addable[i].endsWith("'"))||i==10)); i++){
                     addable[i].replaceAll("'", "");
@@ -202,6 +208,128 @@ public class Control {
             }
         } 
         else throw new WrongFormatException("Unkown command."); 
+    }
+
+
+        //Json methods
+
+        public void WriteCitiesJson(String path, ArrayList<City> toSave){
+
+            File file = new File(path);
+
+            Gson gson = new Gson();
+
+            String json = gson.toJson(toSave);
+
+            try {
+                FileOutputStream fos = new FileOutputStream(file);
+                fos.write( json.getBytes(StandardCharsets.UTF_8) );
+                fos.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void WriteCountriesJson(String path, ArrayList<Country> toSave){
+
+            File file = new File(path);
+
+            Gson gson = new Gson();
+
+            String json = gson.toJson(toSave);
+
+            try {
+                FileOutputStream fos = new FileOutputStream(file);
+                fos.write( json.getBytes(StandardCharsets.UTF_8) );
+                fos.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public ArrayList<City> ReadJsonCities(String path) {
+            try {
+                File file = new File(path);
+                FileInputStream fis = new FileInputStream(file);
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
+
+                String json = "";
+                String line;
+                if((line=reader.readLine())!=null){
+                    json= line;
+                }
+                fis.close();
+
+                Gson gson = new Gson();
+                City[] citiesFromJson = gson.fromJson(json, City[].class);
+                ArrayList<City> sent = new ArrayList<>();
+
+                if(citiesFromJson!=null)sent.addAll(List.of(citiesFromJson));
+
+                return sent;
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        public ArrayList<Country> ReadJsonContries(String path) {
+            try {
+                File file = new File(path);
+                FileInputStream fis = new FileInputStream(file);
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
+
+                String json = "";
+                String line;
+                if((line=reader.readLine())!=null){
+                    json= line;
+                }
+                fis.close();
+
+                Gson gson = new Gson();
+                Country[] countriesFromJson = gson.fromJson(json, Country[].class);
+                ArrayList<Country> sent = new ArrayList<>();
+
+                if(countriesFromJson!=null)sent.addAll(List.of(countriesFromJson));
+
+                return sent;
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+    public void ReadSQLCommand(String path){
+
+        ArrayList<String> commands = new ArrayList<>();
+        try {
+            File file = new File(path);
+            FileInputStream fis = new FileInputStream(file);
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(fis)
+            );
+            String line;
+            while(( line = reader.readLine()) != null){
+                commands.add(line);
+            }
+            fis.close();
+            System.out.println("Tamano del arreglo: "+commands.size());
+            for(String s:commands){
+                System.out.println(s);
+            }
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
     
 }

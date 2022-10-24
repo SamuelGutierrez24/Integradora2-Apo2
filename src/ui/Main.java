@@ -1,21 +1,29 @@
 package ui;
 
+import model.Control;
+
 import java.util.Scanner;
-import  model.Control;
 
 public class Main {
 
     private Scanner sc;
     private Control control;
 
-    public Main(Scanner sc, Control control) {
-        this.sc = sc;
-        this.control = control;
+    public Main() {
+        this.sc = new Scanner(System.in);
+        this.control = new Control();
     }
 
     public static void main(String []args){
         //TODO: todo xd
 
+        Main main = new Main();
+
+        main.prueba();
         
+    }
+
+    public void prueba(){
+        control.ReadSQLCommand("C:\\Users\\user\\OneDrive - Universidad Icesi (@icesi.edu.co)\\Escritorio\\prueba.txt");
     }
 }
