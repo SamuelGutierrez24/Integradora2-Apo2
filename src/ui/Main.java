@@ -24,6 +24,13 @@ public class Main {
     }
 
     public void prueba(){
-        control.ReadSQLCommand("C:\\Users\\user\\OneDrive - Universidad Icesi (@icesi.edu.co)\\Escritorio\\prueba.txt");
+        control.add("INSERT INTO countries(id, name, population, countryCode) VALUES ('jijijaja', 'Colombia', 50.2, '+57')");
+        System.out.println(control.toStringCountries());
+        control.add("INSERT INTO cities(id, name, countryID, population) VALUES ('jajajiji', 'Cali', 'jijijaja', 2.2)");
+        System.out.println(control.toStringCities());
+        control.add("INSERT INTO cities(id, name, countryID, population) VALUES ('PITO', 'Bogota', 'jijijaja', 2.5)");
+        System.out.println(control.toStringCities());
+        control.delete("DELETE FROM cities WHERE id = 'jajajiji'");
+        System.out.println(control.toStringCities());
     }
 }
