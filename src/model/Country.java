@@ -7,7 +7,7 @@ public class Country {
     private String countryCode;
     private double population;
 
-    public Country(String id, String name, double population, String countryCode) {
+    public Country(String id, String name, String countryCode, double population) {
         this.id = id;
         this.name = name;
         this.countryCode = countryCode;
