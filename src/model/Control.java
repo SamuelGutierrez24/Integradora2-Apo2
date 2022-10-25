@@ -61,6 +61,282 @@ public class Control {
     }
 
 
+    public void searchAndSorting(String toSearch){
+        String[] searchable = toSearch.split(" ");
+
+            if(searchable[0].equals("SELECT")) {
+
+
+                int longit = searchable.length;
+
+                //sorting
+                if (longit > 8) {
+                    if (searchable[0].equals("SELECT") && searchable[1].equals("*") && searchable[2].equals("FROM") && searchable[4].equals("WHERE")) {
+
+
+                        if (searchable[8].equals("ORDER") && searchable[9].equals("BY")) {
+
+                            switch (searchable[3]) {
+
+                                case ("cities"):
+
+                                    ArrayList<City> toPrint = new ArrayList<>();
+
+                                    switch (searchable[5]) {
+                                        case ("name"):
+                                            if (searchable[6].equals("=")) {
+                                                if (searchable[10].equals("population")) {
+                                                    //busca y los organiza por la poblacion y los inserta en el arreglo para imprimir
+                                                } else if (searchable[10].equals("id")) {
+                                                    //busca y los organiza por id;
+                                                } else if (searchable[10].equals("countryId")) {
+                                                    //Por el id del pais al que pertenece
+                                                } else {
+                                                    throw new InvalidOperandException("The variable " + searchable[10] + " is not valid.");
+                                                }
+                                            } else {
+                                                throw new InvalidOperandException("Buenos dias");
+                                            }
+                                            break;
+
+                                        case ("population"):
+                                            if (searchable[6].equals("<")) {
+
+                                                switch (searchable[10]) {
+                                                    case ("name"):
+                                                        //ordernar por nombre los que tengan una poblacion menor a searchable[7]
+                                                        break;
+                                                    case ("id"):
+                                                        //ordernar por id los que tengan una poblacion menor a searchable[7]
+                                                        break;
+                                                    case ("countryId"):
+                                                        //ordernar por countryId los que tengan una poblacion menor a searchable[7]
+                                                        break;
+                                                    default:
+                                                        throw new InvalidOperandException("The variable " + searchable[10] + "is not valid");
+                                                }
+
+                                            } else if (searchable[6].equals(">")) {
+
+                                                switch (searchable[10]) {
+                                                    case ("name"):
+                                                        //ordernar por nombre los que tengan una poblacion menor a searchable[7]
+                                                        break;
+                                                    case ("id"):
+                                                        //ordernar por id los que tengan una poblacion menor a searchable[7]
+                                                        break;
+                                                    case ("countryId"):
+                                                        //ordernar por countryId los que tengan una poblacion menor a searchable[7]
+                                                        break;
+                                                    default:
+                                                        throw new InvalidOperandException("The variable " + searchable[10] + "is not valid");
+                                                }
+
+                                            } else if (searchable[6].equals("=")) {
+                                                switch (searchable[10]) {
+                                                    case ("name"):
+                                                        //ordernar por nombre las ciudades que tengan una poblacion igual a searchable[7]
+                                                        break;
+                                                    case ("id"):
+                                                        //ordernar por id las ciudades que tengan una poblacion igual a searchable[7]
+                                                        break;
+                                                    case ("countryId"):
+                                                        //ordernar por countryId las ciudades que tengan una poblacion igual a searchable[7]
+                                                        break;
+                                                    default:
+                                                        throw new InvalidOperandException("The variable " + searchable[10] + "is not valid");
+                                                }
+                                            } else {
+                                                throw new InvalidOperandException("The operand " + searchable[6] + " is not valid.");
+                                            }
+
+                                    }
+
+
+                                    break;
+
+                                case ("countries"):
+
+                                    ArrayList<Country> forPrint = new ArrayList<>();
+
+                                    if (searchable[5].equals("population")) {
+
+                                        switch (searchable[6]) {
+                                            case (">"):
+                                                //buscar paises con una poblacio mayor a searchable[7] y agregarlos al arreglo para imprimir;
+                                                break;
+
+                                            case ("<"):
+                                                //buscar paises con una poblacio menor a searchable[7] y agregarlos al arreglo para imprimir;
+                                                break;
+
+                                            case ("="):
+                                                //buscar paises con una poblacio igual a searchable[7] y agregarlos al arreglo para imprimir;
+                                                break;
+
+                                            default:
+                                                throw new InvalidOperandException("The operand " + searchable[5] + " is not valid.");
+                                        }
+                                    } else {
+                                        throw new InvalidOperandException("For contries you only can order them by name, because all contries have a different name,contryCode and id");
+                                    }
+
+                                    break;
+
+                                default:
+                                    throw new WrongFormatException("Ahora veo que pongo.");
+
+
+                            }
+
+                        }
+                    }
+
+
+                    //show everything
+                } else if (longit == 4) {
+
+                    if (searchable[0].equals("SELECT") && searchable[1].equals("*") && searchable[2].equals("FROM")) {
+
+                        switch (searchable[3]) {
+
+                            case ("countries"):
+                                //Show every country
+                                break;
+                            case ("cities"):
+                                //show every city
+                                break;
+
+                            default:
+                                throw new InvalidOperandException("This variable is not valid");
+
+                        }
+
+                    }
+
+                    //search
+                } else {
+
+                    if (searchable[0].equals("SELECT") && searchable[1].equals("*") && searchable[2].equals("FROM") && searchable[4].equals("WHERE")) {
+
+                        switch (searchable[3]) {
+
+                            case ("countries"):
+
+                                ArrayList<Country> forPrint = new ArrayList<>();
+
+                                switch (searchable[5]) {
+
+                                    case ("id"):
+                                        if (searchable[6].equals("=")) {
+                                            //buscar en paises el id de ese pais
+                                        } else {
+                                            throw new InvalidOperandException("The operand " + searchable[6] + " is not valid.");
+                                        }
+                                        break;
+                                    case ("name"):
+                                        if (searchable[6].equals("=")) {
+                                            //buscar en paises el nombre de ese pais
+                                        } else {
+                                            throw new InvalidOperandException("The operand " + searchable[6] + " is invalid.");
+                                        }
+                                        break;
+                                    case ("countryCode"):
+                                        if (searchable[6].equals("=")) {
+                                            //buscar en paises el code de ese pais
+                                        } else {
+                                            throw new InvalidOperandException("The operand " + searchable[6] + " is not a valid one.");
+                                        }
+                                        break;
+                                    case ("population"):
+
+                                        switch (searchable[6]) {
+
+                                            case (">"):
+                                                //buscar los paises con poblacion mayor a searchable[7]
+                                                break;
+                                            case ("<"):
+                                                //buscar los paises con poblacion menor a searchable[7]
+                                                break;
+                                            case ("="):
+                                                //buscar los paises con poblacion igual a searchable[7]
+                                                break;
+                                            default:
+                                                throw new InvalidOperandException("The operand " + searchable[6] + " is not valid.");
+
+                                        }
+
+                                        break;
+                                    default:
+                                        throw new InvalidOperandException("The variable is invalid");
+                                }
+                                break;
+
+                            case ("cities"):
+
+                                ArrayList<City> forPrintCity = new ArrayList<>();
+
+                                switch (searchable[5]) {
+
+                                    case ("id"):
+                                        if (searchable[6].equals("=")) {
+                                            //buscar en paises el id de ese pais
+                                        } else {
+                                            throw new InvalidOperandException("The operand " + searchable[6] + " is not valid.");
+                                        }
+                                        break;
+                                    case ("name"):
+                                        if (searchable[6].equals("=")) {
+                                            //buscar en paises el nombre de ese pais
+                                        } else {
+                                            throw new InvalidOperandException("The operand " + searchable[6] + " is not valid one.");
+                                        }
+                                        break;
+                                    case ("countryId"):
+                                        if (searchable[6].equals("=")) {
+                                            //buscar en paises el code de ese pais
+                                        } else {
+                                            throw new InvalidOperandException("The operand " + searchable[6] + " is  invalid.");
+                                        }
+                                        break;
+                                    case ("population"):
+
+                                        switch (searchable[6]) {
+
+                                            case (">"):
+                                                //buscar las ciudades y paises con poblacion mayor a searchable[7]
+                                                break;
+                                            case ("<"):
+                                                //buscar las ciudades y paises con poblacion menor a searchable[7]
+                                                break;
+                                            case ("="):
+                                                //buscar las ciudades y paises con poblacion igual a searchable[7]
+                                                break;
+                                            default:
+                                                throw new InvalidOperandException("The operand " + searchable[6] + " is not valid.");
+
+                                        }
+
+                                        break;
+                                    default:
+                                        throw new InvalidOperandException("The variable is invalid");
+                                }
+
+                                break;
+
+
+                        }
+
+                    } else {
+                        throw new WrongFormatException("The format of the command is invalid.");
+                    }
+                }
+
+            }else {
+                throw new WrongFormatException("The format of the command for search is invalid");
+            }
+    }
+
 
 
 
