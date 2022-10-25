@@ -1,6 +1,8 @@
 package model;
 
 import com.google.gson.Gson;
+
+import exceptions.EmptyDatabaseException;
 import exceptions.InvalidOperandException;
 import exceptions.NoSuchCountryException;
 import exceptions.WrongFormatException;
@@ -26,34 +28,37 @@ public class Control {
 
 
     public void add(String toAdd) throws NoSuchCountryException, WrongFormatException{
-        String[] addable = toAdd.replaceAll(",", "").split(" ");
-        if (addable[0].equals("INSERT")&&addable[1].equals("INTO")){
-            if(addable[2].split("\\(")[0].equals("countries")&&(addable[2].split("\\(")[1] + addable[3] + addable[4] +  addable[5].split("\\)")[0]).equals("idnamepopulationcountryCode")&&addable[6].equals("VALUES")){
+        String[] checker = toAdd.replaceAll(",", "").split(" ");
+        String[] addable = toAdd.contains("VALUES")?toAdd.split("VALUES"):null;
+        if (addable!=null&&checker[0].equals("INSERT")&&checker[1].equals("INTO")){
+            if(checker[2].split("\\(")[0].equals("countries")&&(checker[2].split("\\(")[1] + checker[3] + checker[4] +  checker[5].split("\\)")[0]).equals("idnamepopulationcountryCode")&&checker[6].equals("VALUES")){
                 boolean check = true;
-                addable[7] = addable[7].replace("(", "");
-                addable[10] = addable[10].replace(")", "");
+                String[] values = addable[1].split(",");
+                values[0] = values[0].replace("(", "");
+                for(int i=0; i<values.length; i++) values[i] = values[i].replace(")", "").replaceFirst(" ", "");
                 int i;
-                for( i=7; i<addable.length&&(check=((addable[i].startsWith("'")&&addable[i].endsWith("'"))||i==9)); i++){
-                    addable[i] = addable[i].replaceAll("'", "");
+                for( i=0; i<values.length&&(check=((values[i].startsWith("'")&&values[i].endsWith("'"))||i==2)); i++){
+                    values[i] = values[i].replaceAll("'", "");
                 }
                 if(check){
-                    countries.put(addable[7], new Country(addable[7], addable[8], Double.parseDouble(addable[9]), addable[10]));
+                    countries.put(values[0], new Country(values[0], values[1], Double.parseDouble(values[2]), values[3]));
                 }
-                else throw new WrongFormatException("Invalid input for " + (i==7?addable[i-5].split("\\(")[1]:addable[i-5]) + ".");
+                else throw new WrongFormatException("Invalid input for " + (values[i]) + ".");
             }
-            else if (addable[2].split("\\(")[0].equals("cities")&&(addable[2].split("\\(")[1] + addable[3] + addable[4] +  addable[5].split("\\)")[0]).equals("idnamecountryIDpopulation")&&addable[6].equals("VALUES")){
+            else if (checker[2].split("\\(")[0].equals("cities")&&(checker[2].split("\\(")[1] + checker[3] + checker[4] +  checker[5].split("\\)")[0]).equals("idnamecountryIDpopulation")&&checker[6].equals("VALUES")){
                 boolean check = true;
-                addable[7] = addable[7].replace("(", "");
-                addable[10] = addable[10].replace(")", "");
+                String[] values = addable[1].split(",");
+                values[0] = values[0].replace("(", "");
+                for (int i=0; i<values.length; i++) values[i] = values[i].replace(")", "").replaceFirst(" ", "");
                 int i;
-                for(i=7; i<addable.length&&(check=((addable[i].startsWith("'")&&addable[i].endsWith("'"))||i==10)); i++){
-                    addable[i] = addable[i].replaceAll("'", "");
+                for(i=0; i<values.length&&(check=((values[i].startsWith("'")&&values[i].endsWith("'"))||i==3)); i++){
+                    values[i] = values[i].replaceAll("'", "");
                 }
                 if(check){
-                    if(countries.containsKey(addable[9])) cities.put(addable[7], new City(addable[7], addable[8], addable[9], Double.parseDouble(addable[10])));
+                    if(countries.containsKey(values[2])) cities.put(values[0], new City(values[0], values[1], values[2], Double.parseDouble(values[3])));
                     else throw new NoSuchCountryException("The country id specified does not exist.");
                 }
-                else throw new WrongFormatException("Invalid input for " + (i==7?addable[i-5].split("\\(")[1]:addable[i-5]) + ".");
+                else throw new WrongFormatException("Invalid input for " + (values[i]) + ".");
             }
             else throw new WrongFormatException("Declaration of database to be updated is either incomplete or incorrect.");
         }
@@ -68,142 +73,173 @@ public class Control {
 
 
 
-    public void delete(String toDel) throws NoSuchCountryException, WrongFormatException, InvalidOperandException{
-        String[] deletable = toDel.split(" ");
-
-        if(deletable[0].equals("DELETE")&&deletable[1].equals("FROM")&&deletable[3].equals("WHERE")){
+    public void delete(String toDel) throws NoSuchCountryException, WrongFormatException, InvalidOperandException, EmptyDatabaseException{
+        String[] checker = toDel.split(" ");
+        String[] deleteable = (toDel +" ").split("'");
+        if(checker[0].equals("DELETE")&&checker[1].equals("FROM")&&checker[3].equals("WHERE")){
             
             
-            switch(deletable[2]){
+            switch(checker[2]){
                 
                 
                 case("cities"):
                     ArrayList<City> toDelete = new ArrayList<>();
-                    switch(deletable[4]){
+                    switch(checker[4]){
 
 
                         case("id"):
-                            if(deletable[6].startsWith("'")&&deletable[6].endsWith("'")){
-                                if(deletable[5].equals("=")) toDelete.add(cities.get(deletable[6].replaceAll("'", "")));
-                                else throw new InvalidOperandException("The operand " + deletable[5] + "  cannot apply to " + deletable[4] + ".");
+                            if(deleteable.length==3){
+                                if(checker[5].equals("=")) toDelete.add(cities.get(deleteable[1]));
+                                else throw new InvalidOperandException("The operand " + checker[5] + "  cannot apply to " + checker[4] + ".");
                             }
+                            else throw new WrongFormatException("Invalid input for field 'id'.");
                             break;    
 
 
                         case("name"):
-                            if(deletable[5].equals("=")){
-                                for (Map.Entry<String,City> c : cities.entrySet()){
-                                    if(c.getValue().getName().equals(deletable[6].replaceAll("'", ""))) toDelete.add(c.getValue());
+                            if(deleteable.length==3){
+                                if(checker[5].equals("=")){
+                                    for (Map.Entry<String,City> c : cities.entrySet()){
+                                        if(c.getValue().getName().equals(deleteable[1])) toDelete.add(c.getValue());
+                                    }
                                 }
+                                else throw new InvalidOperandException("The operand " + checker[5] + "  cannot apply to " + checker[4] + ".");                               
                             }
-                            else throw new InvalidOperandException("The operand " + deletable[5] + "  cannot apply to " + deletable[4] + ".");                            
+                            else throw new WrongFormatException("Invalid input for field 'name'.");
                             break;
 
 
                         case("country"):
-                            if(deletable[5].equals("=")){
+                            if(checker[5].equals("=")){
                                 Country ct = null;
-                                if(deletable[6].startsWith("'")&&deletable[6].endsWith("'")){
+                                if(deleteable.length==3){
                                     for (Map.Entry<String,Country> c : countries.entrySet()){
-                                        if(c.getValue().getName().equals(deletable[6].replaceAll("'", ""))) ct = c.getValue();
+                                        if(c.getValue().getName().equals(deleteable[1])) ct = c.getValue();
                                     }
                                     for (Map.Entry<String,City> c : cities.entrySet()){
                                         if(c.getValue().getCountryId().equals(ct.getId())) toDelete.add(c.getValue());
                                     }
                                 }
-                                else throw new WrongFormatException("Invalid input value for " + deletable[4] + ".");
+                                else throw new WrongFormatException("Invalid input for field " + checker[4] + ".");
                             }
-                            else throw new InvalidOperandException("The operand " + deletable[5] + "  cannot apply to " + deletable[4] + ".");                            
+                            else throw new InvalidOperandException("The operand " + checker[5] + "  cannot apply to " + checker[4] + ".");                            
                             break;
 
 
                         case("population"):
-                            switch(deletable[5]){
-                                case("="):
-                                    for (Map.Entry<String,City> c : cities.entrySet()){
-                                        if(c.getValue().getPopulation()==Double.parseDouble(deletable[6])) toDelete.add(c.getValue());
-                                    }
-                                    break;
-                                case(">"):
-                                    for (Map.Entry<String,City> c : cities.entrySet()){
-                                        if(c.getValue().getPopulation()>Double.parseDouble(deletable[6])) toDelete.add(c.getValue());
-                                    }
-                                    break;
-                                case("<"):
-                                    for (Map.Entry<String,City> c : cities.entrySet()){
-                                        if(c.getValue().getPopulation()<Double.parseDouble(deletable[6])) toDelete.add(c.getValue());
-                                    }
-                                    break;
-                                default:
-                                    throw new InvalidOperandException("The operand " + deletable[5] + "  cannot apply to " + deletable[4] + ".");
+                            if(deleteable.length>1){
+                                switch(checker[5]){
+                                    case("="):
+                                        for (Map.Entry<String,City> c : cities.entrySet()){
+                                            if(c.getValue().getPopulation()==Double.parseDouble(checker[6])) toDelete.add(c.getValue());
+                                        }
+                                        break;
+                                    case(">"):
+                                        for (Map.Entry<String,City> c : cities.entrySet()){
+                                            if(c.getValue().getPopulation()>Double.parseDouble(checker[6])) toDelete.add(c.getValue());
+                                        }
+                                        break;
+                                    case("<"):
+                                        for (Map.Entry<String,City> c : cities.entrySet()){
+                                            if(c.getValue().getPopulation()<Double.parseDouble(checker[6])) toDelete.add(c.getValue());
+                                        }
+                                        break;
+                                    default:
+                                        throw new InvalidOperandException("The operand " + checker[5] + "  cannot apply to " + checker[4] + ".");
+                                }
                             }
+                            else throw new WrongFormatException("Invalid input for field 'population'.");
                             break;
 
 
                         default:
                             throw new WrongFormatException("The specified field does not match expected values.");
                     }
-                    for(City c : toDelete){
-                        cities.remove(c.getId(),c);
+                    try{
+                        for(City c : toDelete){
+                            cities.remove(c.getId(),c);
+                        }
                     }
+                    catch(NullPointerException e){
+                        throw new EmptyDatabaseException("No cities meet the conditions.");
+                    }
+                    
                     break;
 
 
 
                 case ("countries"):
-                    ArrayList<Country> toDelete2 = new ArrayList<>();
-                    switch(deletable[4]){
+                    ArrayList<Country> toDelete2 = new ArrayList<>(); 
+                    switch(checker[4]){
                         case("id"):
-                            if(deletable[5].equals("=")) toDelete2.add(countries.get(deletable[6]));
-                            else throw new InvalidOperandException("The operand " + deletable[5] + "  cannot apply to " + deletable[4] + ".");
+                            if(deleteable.length==3){
+                                if(checker[5].equals("=")) toDelete2.add(countries.get(checker[6]));
+                                else throw new InvalidOperandException("The operand " + checker[5] + "  cannot apply to " + checker[4] + ".");
+                            }
+                            else throw new WrongFormatException("Invalid input for field 'id'.");
                             break;    
                         case("name"):
-                            if(deletable[5].equals("=")){
+                            if(deleteable.length==3){
+                                if(checker[5].equals("=")){
 
-                                for (Map.Entry<String,Country> c : countries.entrySet()){
-                                    if(c.getValue().getName().equals(deletable[6].replaceAll("'", ""))) toDelete2.add(c.getValue());
+                                    for (Map.Entry<String,Country> c : countries.entrySet()){
+                                        if(c.getValue().getName().equals(checker[6].replaceAll("'", ""))) toDelete2.add(c.getValue());
+                                    }
+
                                 }
-
+                                else throw new InvalidOperandException("The operand " + checker[5] + "  cannot apply to " + checker[4] + ".");                            
                             }
-                            else throw new InvalidOperandException("The operand " + deletable[5] + "  cannot apply to " + deletable[4] + ".");                            
+                            else throw new WrongFormatException("Invalid input for field 'name'.");
                             break;
                         case("coutryCode"):
-                            if(deletable[5].equals("=")){
+                            if(deleteable.length==3){
+                                if(checker[5].equals("=")){
 
-                                for (Map.Entry<String,Country> c : countries.entrySet()){
-                                    if(c.getValue().getCountryCode().equals(deletable[6].replaceAll("'", ""))) toDelete2.add(c.getValue());
+                                    for (Map.Entry<String,Country> c : countries.entrySet()){
+                                        if(c.getValue().getCountryCode().equals(checker[6].replaceAll("'", ""))) toDelete2.add(c.getValue());
+                                    }
+
                                 }
-
+                                else throw new InvalidOperandException("The operand " + checker[5] + "  cannot apply to " + checker[4] + ".");                            
                             }
-                            else throw new InvalidOperandException("The operand " + deletable[5] + "  cannot apply to " + deletable[4] + ".");                            
+                            else throw new WrongFormatException("Invalid inpit for field 'countryCode'.");
                             break;
                         case("population"):
-                            switch(deletable[5]){
-                                case("="):
-                                    for (Map.Entry<String,Country> c : countries.entrySet()){
-                                        if(c.getValue().getPopulation()==Double.parseDouble(deletable[6])) toDelete2.add(c.getValue());
-                                    }
-                                    break;
-                                case(">"):
-                                    for (Map.Entry<String,Country> c : countries.entrySet()){
-                                        if(c.getValue().getPopulation()>Double.parseDouble(deletable[6])) toDelete2.add(c.getValue());
-                                    }
-                                    break;
-                                case("<"):
-                                    for (Map.Entry<String,Country> c : countries.entrySet()){
-                                        if(c.getValue().getPopulation()<Double.parseDouble(deletable[6])) toDelete2.add(c.getValue());
-                                    }
-                                    break;
-                                default:
-                                    throw new InvalidOperandException("The operand " + deletable[5] + "  cannot apply to " + deletable[4] + ".");
+                            if(deleteable.length>1){
+                                switch(checker[5]){
+                                    case("="):
+                                        for (Map.Entry<String,Country> c : countries.entrySet()){
+                                            if(c.getValue().getPopulation()==Double.parseDouble(checker[6])) toDelete2.add(c.getValue());
+                                        }
+                                        break;
+                                    case(">"):
+                                        for (Map.Entry<String,Country> c : countries.entrySet()){
+                                            if(c.getValue().getPopulation()>Double.parseDouble(checker[6])) toDelete2.add(c.getValue());
+                                        }
+                                        break;
+                                    case("<"):
+                                        for (Map.Entry<String,Country> c : countries.entrySet()){
+                                            if(c.getValue().getPopulation()<Double.parseDouble(checker[6])) toDelete2.add(c.getValue());
+                                        }
+                                        break;
+                                    default:
+                                        throw new InvalidOperandException("The operand " + checker[5] + "  cannot apply to " + checker[4] + ".");
+                                }
                             }
+                            else throw new WrongFormatException("Invalid input for field 'population'.");
                             break;
                         default:
                             throw new WrongFormatException("The specified field does not match expected values.");
                     }
-                    for(Country c : toDelete2){
-                        cities.remove(c.getId(),c);
+                    try{
+                        for(Country c : toDelete2){
+                            cities.remove(c.getId(),c);
+                        }
                     }
+                    catch(NullPointerException e){
+                        throw new EmptyDatabaseException("No countries meet the conditions.");
+                    }
+                    
                     break;
 
                 default:
