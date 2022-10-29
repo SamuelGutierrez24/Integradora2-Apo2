@@ -66,6 +66,10 @@ public class Control {
         else throw new WrongFormatException("Unknown command");
     }
 
+
+
+
+
     public String search(String toSearch){
         String out = "";
         String [] searchable = toSearch.split(" ");
@@ -386,6 +390,8 @@ public class Control {
         return out;
     }
 
+
+
     public String sortCity(ArrayList<City> array,String parameter){
 
         String out = "";
@@ -464,6 +470,10 @@ public class Control {
 
         return out;
     }
+
+
+
+
     public String sortCountry(ArrayList<Country> array,String parameter){
         String out = "";
 
@@ -728,6 +738,8 @@ public class Control {
         else throw new WrongFormatException("Unkown command."); 
     }
 
+
+
     public String toStringCountries(){
         return countries.toString();
     }
@@ -736,6 +748,7 @@ public class Control {
         return cities.toString();
     }
 
+    
 
     //Json methods
 
