@@ -843,7 +843,7 @@ public class Control {
         return null;
     }
 
-    public void ReadSQLCommand(String path){
+    public void ReadSQLCommand(String path) throws Exception{
 
         ArrayList<String> commands = new ArrayList<>();
         try {
@@ -857,16 +857,17 @@ public class Control {
                 commands.add(line);
             }
             fis.close();
-            System.out.println("Tamano del arreglo: "+commands.size());
+
             for(String s:commands){
-                System.out.println(s);
+                try{
+                    add(s);
+                }catch (Exception e){
+                    throw new Exception("The command " + s + " execution went wrong, aborting operation");
+                }
             }
 
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+
         }
 
     }
