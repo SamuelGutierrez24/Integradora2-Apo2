@@ -10,6 +10,7 @@ import exceptions.WrongFormatException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.CyclicBarrier;
 
 public class Control {
     
@@ -64,6 +65,483 @@ public class Control {
         }
         else throw new WrongFormatException("Unknown command");
     }
+
+    public String search(String toSearch){
+        String out = "";
+        String [] searchable = toSearch.split(" ");
+
+        if(searchable[0].equals("SELECT") && searchable[1].equals("*") && searchable[2].equals("FROM")){
+
+            switch (searchable[3]){
+                case ("cities"):
+                    ArrayList<City> forPrintCity = new ArrayList<>();
+                    if(searchable.length>4){
+
+                        if(searchable[4].equals("WHERE")){
+
+                            switch (searchable[5]){
+                                case ("population"):
+                                    switch (searchable[6]){
+                                        case(">"):
+                                            for(Map.Entry<String,City> c : cities.entrySet()){
+                                                if(c.getValue().getPopulation()>Double.parseDouble(searchable[7])){
+                                                    forPrintCity.add(c.getValue());
+                                                }
+                                            }
+                                            if(searchable.length==11){
+                                                if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
+                                                    out = sortCity(forPrintCity,searchable[9]);
+                                                }else {
+                                                    throw new WrongFormatException("The format for sorting is invalid");
+                                                }
+                                            }else {
+                                                for(int i = 0;i<forPrintCity.size();i++){
+                                                    out += forPrintCity.get(i).toString()+"\n";
+                                                }
+                                            }
+                                        break;
+                                        case ("<"):
+                                            for(Map.Entry<String,City> c : cities.entrySet()){
+                                                if(c.getValue().getPopulation()<Double.parseDouble(searchable[7])){
+                                                    forPrintCity.add(c.getValue());
+                                                }
+                                            }
+                                            if(searchable.length==11){
+                                                if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
+                                                    out = sortCity(forPrintCity,searchable[9]);
+                                                }else {
+                                                    throw new WrongFormatException("The format for sorting is invalid");
+                                                }
+                                            }else {
+                                                for(int i = 0;i<forPrintCity.size();i++){
+                                                    out += forPrintCity.get(i).toString()+"\n";
+                                                }
+                                            }
+                                        break;
+                                        case ("="):
+                                            for(Map.Entry<String,City> c : cities.entrySet()){
+                                                if(c.getValue().getPopulation()==Double.parseDouble(searchable[7])){
+                                                    forPrintCity.add(c.getValue());
+                                                }
+                                            }
+                                            if(searchable.length==11){//Verifico si hay que hacerle sort
+                                                if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
+                                                    out = sortCity(forPrintCity,searchable[9]);
+                                                }else {
+                                                    throw new WrongFormatException("The format for sorting is invalid");
+                                                }
+                                            }else {
+                                                for(int i = 0;i<forPrintCity.size();i++){
+                                                    out += forPrintCity.get(i).toString()+"\n";
+                                                }
+                                            }
+                                        break;
+                                        default:
+                                            throw new InvalidOperandException("This operand for this search is invalid.");
+                                    }
+                                break;
+                                case("name"):
+                                    if(searchable[6].equals("=")){
+                                        String [] comillas = toSearch.split("'");
+                                        for(Map.Entry<String,City> c : cities.entrySet()){
+                                            if(c.getValue().getName().equals(comillas[1])){
+                                                forPrintCity.add(c.getValue());
+                                            }
+                                        }
+                                        if(searchable.length==11){//Verifico si hay que hacerle sort
+                                            if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
+                                                sortCity(forPrintCity,searchable[9]);
+                                            }else {
+                                                throw new WrongFormatException("The format for sorting is invalid");
+                                            }
+                                        }else {
+                                            for(int i = 0;i<forPrintCity.size();i++){
+                                                out += forPrintCity.get(i).toString()+"\n";
+                                            }
+                                        }
+                                    }else {
+                                        throw new WrongFormatException("The value of " + searchable[6] + " is invalid for the variable name");
+                                    }
+                                break;
+                                case ("id"):
+                                    if(searchable[6].equals("=")){
+                                        String [] comillas = toSearch.split("'");
+                                        for(Map.Entry<String,City> c : cities.entrySet()){
+                                            if(c.getValue().getId().equals(comillas[1])){
+                                                forPrintCity.add(c.getValue());
+                                            }
+                                        }
+                                        if(searchable.length==11){//Verifico si hay que hacerle sort
+                                            if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
+                                                sortCity(forPrintCity,searchable[9]);
+                                            }else {
+                                                throw new WrongFormatException("The format for sorting is invalid");
+                                            }
+                                        }else {
+                                            for(int i = 0;i<forPrintCity.size();i++){
+                                                out += forPrintCity.get(i).toString()+"\n";
+                                            }
+                                        }
+                                    }else {
+                                        throw new WrongFormatException("The value of " + searchable[6] + " is invalid for the variable name");
+                                    }
+                                break;
+                                case ("countryId"):
+                                    if(searchable[6].equals("=")){
+                                        String [] comillas = toSearch.split("'");
+                                        for(Map.Entry<String,City> c : cities.entrySet()){
+                                            if(c.getValue().getCountryId().equals(comillas[1])){
+                                                forPrintCity.add(c.getValue());
+                                            }
+                                        }
+                                        if(searchable.length==11){//Verifico si hay que hacerle sort
+                                            if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
+                                                sortCity(forPrintCity,searchable[9]);
+                                            }else {
+                                                throw new WrongFormatException("The format for sorting is invalid");
+                                            }
+                                        }else {
+                                            for(int i = 0;i<forPrintCity.size();i++){
+                                                out += forPrintCity.get(i).toString()+"\n";
+                                            }
+                                        }
+                                    }else {
+                                        throw new WrongFormatException("The value of " + searchable[6] + " is invalid for the variable name");
+                                    }
+                                break;
+                                default:
+                                    throw new WrongFormatException("The variable for search is invalid for the format.");
+                            }
+
+
+
+                        }else {
+                            throw new WrongFormatException("The format is wrong because is missing WHERE");
+                        }
+
+
+                    }else {
+                        //show every city
+                        for(Map.Entry<String,City> c : cities.entrySet()){
+                            out += c.getValue().toString() + " \n";
+                        }
+                    }
+                break;
+                case ("countries"):
+                    ArrayList<Country>forPrintCountry = new ArrayList<>();
+                    if(searchable.length>4){
+                        if (searchable[4].equals("WHERE")) {
+                            switch (searchable[5]){
+                                case ("population"):
+                                    switch (searchable[6]){
+                                        case ("<"):
+                                            for(Map.Entry<String,Country> c : countries.entrySet()){
+                                                if(c.getValue().getPopulation()<Double.parseDouble(searchable[7])){
+                                                    forPrintCountry.add(c.getValue());
+                                                }
+                                            }
+                                            if(searchable.length==11){//Verifico si hay que hacerle sort
+                                                if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
+                                                    out = sortCountry(forPrintCountry,searchable[9]);
+                                                }else {
+                                                    throw new WrongFormatException("The format for sorting is invalid");
+                                                }
+                                            }else {
+                                                for(int i = 0;i<forPrintCountry.size();i++){
+                                                    out += forPrintCountry.get(i).toString()+"\n";
+                                                }
+                                            }
+                                        break;
+                                        case (">"):
+                                            for(Map.Entry<String,Country> c : countries.entrySet()){
+                                                if(c.getValue().getPopulation()>Double.parseDouble(searchable[7])){
+                                                    forPrintCountry.add(c.getValue());
+                                                }
+                                            }
+                                            if(searchable.length==11){//Verifico si hay que hacerle sort
+                                                if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
+                                                    out = sortCountry(forPrintCountry,searchable[9]);
+                                                }else {
+                                                    throw new WrongFormatException("The format for sorting is invalid");
+                                                }
+                                            }else {
+                                                for(int i = 0;i<forPrintCountry.size();i++){
+                                                    out += forPrintCountry.get(i).toString()+"\n";
+                                                }
+                                            }
+                                            break;
+                                        case ("="):
+                                            for(Map.Entry<String,Country> c : countries.entrySet()){
+                                                if(c.getValue().getPopulation()==Double.parseDouble(searchable[7])){
+                                                    forPrintCountry.add(c.getValue());
+                                                }
+                                            }
+                                            if(searchable.length==11){//Verifico si hay que hacerle sort
+                                                if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
+                                                    out = sortCountry(forPrintCountry,searchable[9]);
+                                                }else {
+                                                    throw new WrongFormatException("The format for sorting is invalid");
+                                                }
+                                            }else {
+                                                for(int i = 0;i<forPrintCountry.size();i++){
+                                                    out += forPrintCountry.get(i).toString()+"\n";
+                                                }
+                                            }
+                                            break;
+                                        default:
+                                            throw new InvalidOperandException("The operand for the search with population is not valid.");
+                                    }
+                                break;
+                                case ("id"):
+
+                                    if(searchable[6].equals("=")) {
+                                        String [] comillas = toSearch.split("'");
+                                        for (Map.Entry<String, Country> c : countries.entrySet()) {
+                                            if (c.getValue().getId().equals(comillas[1])) {
+                                                forPrintCountry.add(c.getValue());
+                                            }
+                                        }
+                                        if (searchable.length == 11) {//Verifico si hay que hacerle sort
+                                            if (searchable[8].equals("ORDER") && searchable[9].equals("BY")) {
+                                                out = sortCountry(forPrintCountry, searchable[9]);
+                                            } else {
+                                                throw new WrongFormatException("The format for sorting is invalid");
+                                            }
+                                        } else {
+                                            for (int i = 0; i < forPrintCountry.size(); i++) {
+                                                out += forPrintCountry.get(i).toString() + "\n";
+                                            }
+                                        }
+                                    } else {
+                                        throw new InvalidOperandException("For search by id you must use the operand =");
+                                    }
+                                    break;
+                                case("name"):
+
+                                    if(searchable[6].equals("=")) {
+                                        String [] comillas = toSearch.split("'");
+                                        for (Map.Entry<String, Country> c : countries.entrySet()) {
+                                            if (c.getValue().getName().equals(comillas[1])) {
+                                                forPrintCountry.add(c.getValue());
+                                            }
+                                        }
+                                        if (searchable.length == 11) {//Verifico si hay que hacerle sort
+                                            if (searchable[8].equals("ORDER") && searchable[9].equals("BY")) {
+                                                out = sortCountry(forPrintCountry, searchable[9]);
+                                            } else {
+                                                throw new WrongFormatException("The format for sorting is invalid");
+                                            }
+                                        } else {
+                                            for (int i = 0; i < forPrintCountry.size(); i++) {
+                                                out += forPrintCountry.get(i).toString() + "\n";
+                                            }
+                                        }
+                                    }else {
+                                        throw new InvalidOperandException("For search a name you must use the operand =");
+                                    }
+                                    break;
+                                case ("contryCode"):
+
+                                    if(searchable[6].equals("=")) {
+                                        String [] comillas = toSearch.split("'");
+                                        for (Map.Entry<String, Country> c : countries.entrySet()) {
+                                            if (c.getValue().getCountryCode().equals(comillas[1])) {
+                                                forPrintCountry.add(c.getValue());
+                                            }
+                                        }
+                                        if (searchable.length == 11) {//Verifico si hay que hacerle sort
+                                            if (searchable[8].equals("ORDER") && searchable[9].equals("BY")) {
+                                                out = sortCountry(forPrintCountry, searchable[9]);
+                                            } else {
+                                                throw new WrongFormatException("The format for sorting is invalid");
+                                            }
+                                        } else {
+                                            for (int i = 0; i < forPrintCountry.size(); i++) {
+                                                out += forPrintCountry.get(i).toString() + "\n";
+                                            }
+                                        }
+                                    }else {
+                                        throw new InvalidOperandException("For search by CountryCode you must use the operand =");
+                                    }
+                                break;
+                                default:
+                                    throw new WrongFormatException("The variable is not valid for search");
+                            }
+                        }
+                    }else {
+                        //show every country
+                        for(Map.Entry<String,Country> c : countries.entrySet()){
+                            out += c.getValue().toString() + "\n";
+                        }
+                    }
+                break;
+                default:
+                    throw new WrongFormatException("You can only search a country or a city");
+            }
+
+        }else {
+            throw new WrongFormatException("The format of the command is invalid");
+        }
+
+        return out;
+    }
+
+    public String sortCity(ArrayList<City> array,String parameter){
+
+        String out = "";
+
+        switch (parameter){
+            case ("population"):
+                array.sort(new Comparator<City>() {
+                    @Override
+                    public int compare(City o1, City o2) {
+                        if(o1.getPopulation()>o2.getPopulation()){
+                            return 1;
+                        }else if (o1.getPopulation()<o2.getPopulation()){
+                            return -1;
+                        }else
+                            return 0;
+                    }
+                });
+                Collections.reverse(array);
+                for(int i = 0;i<array.size();i++){
+                    out += array.get(i).getName() +"  population: " + array.get(i).getPopulation();
+                }
+            break;
+            case ("name"):
+                array.sort(new Comparator<City>() {
+                    @Override
+                    public int compare(City o1, City o2) {
+                        if(o1.getName().compareTo(o2.getName())>0){
+                            return 1;
+                        }else if (o1.getName().compareTo(o2.getName())<0){
+                            return -1;
+                        }else
+                            return 0;
+                    }
+                });
+                Collections.reverse(array);
+                for(int i = 0;i<array.size();i++){
+                    out += array.get(i).getName();
+                }
+                break;
+            case ("id"):
+                array.sort(new Comparator<City>() {
+                    @Override
+                    public int compare(City o1, City o2) {
+                        if(o1.getId().compareTo(o2.getId())>0){
+                            return 1;
+                        }else if (o1.getId().compareTo(o2.getId())<0){
+                            return -1;
+                        }else
+                            return 0;
+                    }
+                });
+                Collections.reverse(array);
+                for(int i = 0;i<array.size();i++){
+                    out += array.get(i).getName() + " id :" + array.get(i).getId();
+                }
+            case ("countryId"):
+                array.sort(new Comparator<City>() {
+                    @Override
+                    public int compare(City o1, City o2) {
+                        if(o1.getCountryId().compareTo(o2.getCountryId())>0){
+                            return 1;
+                        }else if (o1.getCountryId().compareTo(o2.getCountryId())<0){
+                            return -1;
+                        }else
+                            return 0;
+                    }
+                });
+                Collections.reverse(array);
+                for(int i = 0;i<array.size();i++){
+                    out += array.get(i).getName() + " id :" + array.get(i).getCountryId();
+                }
+            break;
+            default:
+                throw new WrongFormatException("That variable is not valid for order the information");
+        }
+
+        return out;
+    }
+    public String sortCountry(ArrayList<Country> array,String parameter){
+        String out = "";
+
+        switch (parameter){
+            case ("population"):
+                array.sort(new Comparator<Country>() {
+                    @Override
+                    public int compare(Country o1, Country o2) {
+                        if(o1.getPopulation()>o2.getPopulation()){
+                            return 1;
+                        }else if (o1.getPopulation()<o2.getPopulation()){
+                            return -1;
+                        }else
+                            return 0;
+                    }
+                });
+                Collections.reverse(array);
+                for(int i = 0;i<array.size();i++){
+                    out += array.get(i).getName() +"  population: " + array.get(i).getPopulation();
+                }
+                break;
+            case ("name"):
+                array.sort(new Comparator<Country>() {
+                    @Override
+                    public int compare(Country o1, Country o2) {
+                        if(o1.getName().compareTo(o2.getName())>0){
+                            return 1;
+                        }else if (o1.getName().compareTo(o2.getName())<0){
+                            return -1;
+                        }else
+                            return 0;
+                    }
+                });
+                Collections.reverse(array);
+                for(int i = 0;i<array.size();i++){
+                    out += array.get(i).getName();
+                }
+                break;
+            case ("id"):
+                array.sort(new Comparator<Country>() {
+                    @Override
+                    public int compare(Country o1, Country o2) {
+                        if(o1.getId().compareTo(o2.getId())>0){
+                            return 1;
+                        }else if (o1.getId().compareTo(o2.getId())<0){
+                            return -1;
+                        }else
+                            return 0;
+                    }
+                });
+                Collections.reverse(array);
+                for(int i = 0;i<array.size();i++){
+                    out += array.get(i).getName() + " id :" + array.get(i).getId();
+                }
+            case ("countryCode"):
+                array.sort(new Comparator<Country>() {
+                    @Override
+                    public int compare(Country o1, Country o2) {
+                        if(o1.getCountryCode().compareTo(o2.getCountryCode())>0){
+                            return 1;
+                        }else if (o1.getCountryCode().compareTo(o2.getCountryCode())<0){
+                            return -1;
+                        }else
+                            return 0;
+                    }
+                });
+                Collections.reverse(array);
+                for(int i = 0;i<array.size();i++){
+                    out += array.get(i).getName() + " id :" + array.get(i).getCountryCode();
+                }
+                break;
+            default:
+                throw new WrongFormatException("That variable is not valid for order the information");
+        }
+
+        return out;
+    }
+
 
 
 
