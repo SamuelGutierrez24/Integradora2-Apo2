@@ -61,939 +61,483 @@ public class Control {
         else throw new WrongFormatException("Unknown command");
     }
 
-
-    public String searchAndSorting(String toSearch){
-        String[] searchable = toSearch.split(" ");
+    public String search(String toSearch){
         String out = "";
-            if(searchable[0].equals("SELECT")) {
+        String [] searchable = toSearch.split(" ");
 
+        if(searchable[0].equals("SELECT") && searchable[1].equals("*") && searchable[2].equals("FROM")){
 
-                int longit = searchable.length;
+            switch (searchable[3]){
+                case ("cities"):
+                    ArrayList<City> forPrintCity = new ArrayList<>();
+                    if(searchable.length>4){
 
-                //sorting
-                if (longit > 8) {
-                    if (searchable[0].equals("SELECT") && searchable[1].equals("*") && searchable[2].equals("FROM") && searchable[4].equals("WHERE")) {
+                        if(searchable[4].equals("WHERE")){
 
-
-                        if (searchable[8].equals("ORDER") && searchable[9].equals("BY")) {
-
-                            switch (searchable[3]) {
-
-                                case ("cities"):
-
-                                    ArrayList<City> toPrint = new ArrayList<>();
-
-                                    switch (searchable[5]) {
-                                        case ("name"):
-                                            if (searchable[6].equals("=")) {
-                                                if (searchable[10].equals("population")) {
-                                                    for(Map.Entry<String,City> c : cities.entrySet()){
-                                                         if(c.getValue().getName().equals(searchable[7])){
-                                                             toPrint.add(c.getValue()); //busca y los organiza por la poblacion y los inserta en el arreglo para imprimir
-                                                             toPrint.sort(new Comparator<City>() {
-                                                                 @Override
-                                                                 public int compare(City o1, City o2) {
-                                                                     if(o1.getPopulation()>o2.getPopulation()){
-                                                                         return 1;
-                                                                     } else if (o1.getPopulation()<o2.getPopulation()) {
-                                                                         return -1;
-                                                                     }else
-                                                                     return 0;
-                                                                 }
-                                                             });
-                                                         }
-                                                    }
-                                                } else if (searchable[10].equals("id")) {
-                                                    for(Map.Entry<String,City> c : cities.entrySet()) {
-                                                        if (c.getValue().getName().equals(searchable[7])) {
-                                                            toPrint.add(c.getValue()); //busca y los organiza por id;
-                                                        }
-                                                    }
-                                                        toPrint.sort(new Comparator<City>() {
-                                                            @Override
-                                                            public int compare(City o1, City o2) {
-                                                                if (o1.getId().compareTo(o2.getId())>0) {
-                                                                    return 1;
-
-                                                                } else if (o1.getId().compareTo(o2.getId())<0) {
-                                                                    return -1;
-                                                                }else
-                                                                    return 0;
-                                                                }
-                                                        });
-
-
-                                                } else if (searchable[10].equals("countryId")) {
-                                                    for(Map.Entry<String,City> c : cities.entrySet()){
-                                                        if(c.getValue().getName().equals(searchable[7])){
-                                                            toPrint.add(c.getValue());//Por el id del pais al que pertenece
-
-                                                        }
-                                                    }
-                                                    toPrint.sort(new Comparator<City>() {
-                                                        @Override
-                                                        public int compare(City o1, City o2) {
-                                                            if (o1.getCountryId().compareTo(o2.getCountryId())>0) {
-                                                                return 1;
-
-                                                            } else if (o1.getCountryId().compareTo(o2.getCountryId())<0) {
-                                                                return -1;
-                                                            }else
-                                                                return 0;
-                                                        }
-                                                    });
-                                                } else {
-                                                    throw new InvalidOperandException("The variable " + searchable[10] + " is not valid.");
+                            switch (searchable[5]){
+                                case ("population"):
+                                    switch (searchable[6]){
+                                        case(">"):
+                                            for(Map.Entry<String,City> c : cities.entrySet()){
+                                                if(c.getValue().getPopulation()>Double.parseDouble(searchable[7])){
+                                                    forPrintCity.add(c.getValue());
                                                 }
-                                            } else {
-                                                throw new InvalidOperandException("Buenos dias");
                                             }
-                                            break;
-
-                                        case ("population"):
-                                            if (searchable[6].equals("<")) {
-
-                                                switch (searchable[10]) {
-                                                    case ("name"):
-                                                        for(Map.Entry<String,City> c : cities.entrySet()){
-                                                            if(c.getValue().getPopulation()<Double.parseDouble(searchable[7])){//ordernar por nombre los que tengan una poblacion menor a searchable[7]
-                                                                toPrint.add(c.getValue());
-                                                            }
-                                                        }
-                                                        toPrint.sort(new Comparator<City>() {
-                                                            @Override
-                                                            public int compare(City o1, City o2) {
-                                                                if(o1.getName().compareTo(o2.getName())>0){
-                                                                    return 1;
-                                                                } else if (o1.getName().compareTo(o2.getName())<0) {
-                                                                    return-1;
-                                                                }else {
-                                                                    return 0;
-                                                                }
-                                                            }
-                                                        });
-                                                        for(int i = 0;i<toPrint.size();i++){
-                                                            out += toPrint.get(i).getName() +"\n";
-                                                        }
-
-                                                        break;
-                                                    case ("id"):
-                                                        for(Map.Entry<String,City> c : cities.entrySet()){
-                                                            if(c.getValue().getPopulation()< Double.parseDouble(searchable[7])){//ordernar por id los que tengan una poblacion menor a searchable[7]
-                                                                toPrint.add(c.getValue());
-
-                                                            }
-                                                        }
-                                                        toPrint.sort(new Comparator<City>() {
-                                                            @Override
-                                                            public int compare(City o1, City o2) {
-                                                                if(o1.getId().compareTo(o2.getId())>0){
-                                                                    return 1;
-                                                                } else if (o1.getId().compareTo(o2.getId())<0) {
-                                                                    return-1;
-                                                                }else {
-                                                                    return 0;
-                                                                }
-                                                            }
-                                                        });
-                                                        for(int i = 0;i<toPrint.size();i++){
-                                                            out += toPrint.get(i).getId() +"\n";
-                                                        }
-                                                        break;
-                                                    case ("countryId"):
-                                                        for(Map.Entry<String,City> c : cities.entrySet()){
-                                                            if(c.getValue().getPopulation()<Double.parseDouble(searchable[7])){
-                                                                toPrint.add(c.getValue()); //ordernar por countryId los que tengan una poblacion menor a searchable[7]
-                                                            }
-                                                        }
-                                                        toPrint.sort(new Comparator<City>() {
-                                                            @Override
-                                                            public int compare(City o1, City o2) {
-                                                                if(o1.getCountryId().compareTo(o2.getCountryId())>0){
-                                                                    return 1;
-                                                                } else if (o1.getCountryId().compareTo(o2.getCountryId())<0) {
-                                                                    return-1;
-                                                                }else {
-                                                                    return 0;
-                                                                }
-                                                            }
-                                                        });
-                                                        for(int i = 0;i<toPrint.size();i++){
-                                                            out += toPrint.get(i).getCountryId() +"\n";
-                                                        }
-                                                        break;
-                                                    default:
-                                                        throw new InvalidOperandException("The variable " + searchable[10] + "is not valid");
-                                                }
-
-                                            } else if (searchable[6].equals(">")) {
-
-                                                switch (searchable[10]) {
-                                                    case ("name"):
-                                                        for(Map.Entry<String,City> c : cities.entrySet()){
-                                                            if(c.getValue().getPopulation()>Double.parseDouble(searchable[7])){
-                                                                toPrint.add(c.getValue());//ordernar por nombre los que tengan una poblacion menor a searchable[7]
-                                                            }
-                                                        }
-                                                        toPrint.sort(new Comparator<City>() {
-                                                            @Override
-                                                            public int compare(City o1, City o2) {
-                                                                if(o1.getName().compareTo(o2.getName())>0){
-                                                                    return 1;
-                                                                } else if (o1.getName().compareTo(o2.getName())<0) {
-                                                                    return-1;
-                                                                }else {
-                                                                    return 0;
-                                                                }
-                                                            }
-                                                        });
-                                                        for(int i = 0;i<toPrint.size();i++){
-                                                            out += toPrint.get(i).getName() +"\n";
-                                                        }
-                                                        break;
-                                                    case ("id"):
-                                                        for(Map.Entry<String,City> c : cities.entrySet()){
-                                                            if(c.getValue().getPopulation()>Double.parseDouble(searchable[7])){
-                                                                toPrint.add(c.getValue());//ordernar por id los que tengan una poblacion menor a searchable[7]
-                                                            }
-                                                        }
-                                                        toPrint.sort(new Comparator<City>() {
-                                                            @Override
-                                                            public int compare(City o1, City o2) {
-                                                                if(o1.getId().compareTo(o2.getId())>0){
-                                                                    return 1;
-                                                                } else if (o1.getId().compareTo(o2.getId())<0) {
-                                                                    return-1;
-                                                                }else {
-                                                                    return 0;
-                                                                }
-                                                            }
-                                                        });
-                                                        for(int i = 0;i<toPrint.size();i++){
-                                                            out += toPrint.get(i).getId() +"\n";
-                                                        }
-                                                        break;
-                                                    case ("countryId"):
-                                                        for(Map.Entry<String,City> c : cities.entrySet()){
-                                                            if(c.getValue().getPopulation()>Double.parseDouble(searchable[7])){
-                                                                toPrint.add(c.getValue());
-                                                            }//ordernar por countryId los que tengan una poblacion menor a searchable[7]
-                                                        }
-                                                        toPrint.sort(new Comparator<City>() {
-                                                            @Override
-                                                            public int compare(City o1, City o2) {
-                                                                if(o1.getCountryId().compareTo(o2.getCountryId())>0){
-                                                                    return 1;
-                                                                } else if (o1.getCountryId().compareTo(o2.getCountryId())<0) {
-                                                                    return-1;
-                                                                }else {
-                                                                    return 0;
-                                                                }
-                                                            }
-                                                        });
-                                                        for(int i = 0;i<toPrint.size();i++){
-                                                            out += toPrint.get(i).getCountryId() +"\n";
-                                                        }
-                                                        break;
-                                                    default:
-                                                        throw new InvalidOperandException("The variable " + searchable[10] + "is not valid");
-                                                }
-
-                                            } else if (searchable[6].equals("=")) {
-                                                switch (searchable[10]) {
-                                                    case ("name"):
-                                                        for(Map.Entry<String,City> c : cities.entrySet()){
-                                                            if(c.getValue().getPopulation()==Double.parseDouble(searchable[7])){
-                                                                toPrint.add(c.getValue());//ordernar por nombre las ciudades que tengan una poblacion igual a searchable[7]
-                                                            }
-                                                        }
-                                                        toPrint.sort(new Comparator<City>() {
-                                                            @Override
-                                                            public int compare(City o1, City o2) {
-                                                                if(o1.getName().compareTo(o2.getName())>0){
-                                                                    return 1;
-                                                                } else if (o1.getName().compareTo(o2.getName())<0) {
-                                                                    return-1;
-                                                                }else {
-                                                                    return 0;
-                                                                }
-                                                            }
-                                                        });
-                                                        for(int i = 0;i<toPrint.size();i++){
-                                                            out += toPrint.get(i).getName() +"\n";
-                                                        }
-                                                        break;
-                                                    case ("id"):
-                                                        for(Map.Entry<String,City> c : cities.entrySet()){
-                                                            if(c.getValue().getPopulation()==Double.parseDouble(searchable[7])){
-                                                                toPrint.add(c.getValue());//ordernar por id las ciudades que tengan una poblacion igual a searchable[7]
-                                                            }
-                                                        }
-                                                        toPrint.sort(new Comparator<City>() {
-                                                            @Override
-                                                            public int compare(City o1, City o2) {
-                                                                if(o1.getId().compareTo(o2.getId())>0){
-                                                                    return 1;
-                                                                } else if (o1.getCountryId().compareTo(o2.getCountryId())<0) {
-                                                                    return-1;
-                                                                }else {
-                                                                    return 0;
-                                                                }
-                                                            }
-                                                        });
-                                                        for(int i = 0;i<toPrint.size();i++){
-                                                            out += toPrint.get(i).getId() +"\n";
-                                                        }
-                                                        break;
-                                                    case ("countryId"):
-                                                        for(Map.Entry<String,City> c : cities.entrySet()){
-                                                            if(c.getValue().getPopulation()==Double.parseDouble(searchable[7])){
-                                                                toPrint.add(c.getValue());//ordernar por countryId las ciudades que tengan una poblacion igual a searchable[7]
-                                                            }
-                                                        }
-                                                        toPrint.sort(new Comparator<City>() {
-                                                            @Override
-                                                            public int compare(City o1, City o2) {
-                                                                if(o1.getCountryId().compareTo(o2.getCountryId())>0){
-                                                                    return 1;
-                                                                } else if (o1.getCountryId().compareTo(o2.getCountryId())<0) {
-                                                                    return-1;
-                                                                }else {
-                                                                    return 0;
-                                                                }
-                                                            }
-                                                        });
-                                                        for(int i = 0;i<toPrint.size();i++){
-                                                            out += toPrint.get(i).getCountryId() +"\n";
-                                                        }
-                                                        break;
-                                                    default:
-                                                        throw new InvalidOperandException("The variable " + searchable[10] + "is not valid");
-                                                }
-                                            } else {
-                                                throw new InvalidOperandException("The operand " + searchable[6] + " is not valid.");
-                                            }
-                                        break;
-
-                                        case ("countryId"):
-                                            if (searchable[6].equals("=")) {
-                                                if (searchable[10].equals("population")) {
-                                                    for(Map.Entry<String,City> c : cities.entrySet()){
-                                                        if(c.getValue().getCountryId().equals(searchable[7])){
-                                                            toPrint.add(c.getValue());//busca y organiza por la poblacion
-
-                                                        }
-                                                    }
-                                                    toPrint.sort(new Comparator<City>() {
-                                                        @Override
-                                                        public int compare(City o1, City o2) {
-                                                            if(o1.getPopulation()>o2.getPopulation()){
-                                                                return 1;
-                                                            } else if (o1.getPopulation()<o2.getPopulation()) {
-                                                                return-1;
-                                                            }else {
-                                                                return 0;
-                                                            }
-                                                        }
-                                                    });
-                                                    for(int i = 0;i<toPrint.size();i++){
-                                                        out += toPrint.get(i).getName() + ":  " +  toPrint.get(i).getPopulation() +"\n";
-                                                    }
-                                                } else if (searchable[10].equals("id")) {
-                                                    for(Map.Entry<String,City> c : cities.entrySet()){
-                                                        if(c.getValue().getCountryId().equals(searchable[7])){
-                                                            toPrint.add(c.getValue());//busca y los organiza por id;
-
-                                                        }
-                                                    }
-                                                    toPrint.sort(new Comparator<City>() {
-                                                        @Override
-                                                        public int compare(City o1, City o2) {
-                                                            if(o1.getId().compareTo(o2.getId())>0){
-                                                                return 1;
-                                                            } else if (o1.getId().compareTo(o2.getId())<0) {
-                                                                return-1;
-                                                            }else {
-                                                                return 0;
-                                                            }
-                                                        }
-                                                    });
-                                                    for(int i = 0;i<toPrint.size();i++){
-                                                        out += toPrint.get(i).getId() +"\n";
-                                                    }
-                                                } else if (searchable[10].equals("name")) {
-                                                    for(Map.Entry<String,City> c : cities.entrySet()){
-                                                        if(c.getValue().getCountryId().equals(searchable[7])){
-                                                            toPrint.add(c.getValue());//Por el nombre del pais al que pertenece
-                                                            //toPrint.sort();
-                                                        }
-                                                    }
-                                                    toPrint.sort(new Comparator<City>() {
-                                                        @Override
-                                                        public int compare(City o1, City o2) {
-                                                            if(o1.getName().compareTo(o2.getName())>0){
-                                                                return 1;
-                                                            } else if (o1.getName().compareTo(o2.getName())<0) {
-                                                                return-1;
-                                                            }else {
-                                                                return 0;
-                                                            }
-                                                        }
-                                                    });
-                                                    for(int i = 0;i<toPrint.size();i++){
-                                                        out += toPrint.get(i).getName() +"\n";
-                                                    }
-                                                } else {
-                                                    throw new InvalidOperandException("The variable " + searchable[10] + " is not valid.");
-                                                }
-                                            } else {
-                                                throw new InvalidOperandException("This operand is not valid for the expression." +
-                                                        "");
-                                            }
-                                        break;
-
-                                        default:
-                                            throw new WrongFormatException("You only can search and filter a city by a name,population or countryId");
-
-                                    }
-
-
-                                    break;
-
-                                case ("countries"):
-
-                                    ArrayList<Country> forPrint = new ArrayList<>();
-
-                                    switch (searchable[5]) {
-
-                                        case("population"):
-                                            switch (searchable[6]) {
-                                                case (">"):
-                                                    if(searchable[10].equals("id")){
-                                                        for(Map.Entry<String,Country> c : countries.entrySet()){
-                                                            if(c.getValue().getPopulation()>Double.parseDouble(searchable[7])){
-                                                                forPrint.add(c.getValue());//Por el nombre del pais al que pertenece
-
-                                                            }
-                                                        }
-                                                        forPrint.sort(new Comparator<Country>() {
-                                                            @Override
-                                                            public int compare(Country o1, Country o2) {
-                                                                if(o1.getId().compareTo(o2.getId())>0){
-                                                                    return 1;
-                                                                } else if (o1.getId().compareTo(o2.getId())<0) {
-                                                                    return-1;
-                                                                }else {
-                                                                    return 0;
-                                                                }
-                                                            }
-                                                        });
-                                                        for(int i = 0;i<forPrint.size();i++){
-                                                            out += forPrint.get(i).getId() +"\n";
-                                                        }
-                                                    } else if (searchable[10].equals("name")) {
-                                                        for(Map.Entry<String,Country> c : countries.entrySet()){
-                                                            if(c.getValue().getPopulation()>Double.parseDouble(searchable[7])){
-                                                                forPrint.add(c.getValue());//Por el nombre del pais al que pertenece
-
-                                                            }
-                                                        }
-                                                        forPrint.sort(new Comparator<Country>() {
-                                                            @Override
-                                                            public int compare(Country o1, Country o2) {
-                                                                if(o1.getName().compareTo(o2.getName())>0){
-                                                                    return 1;
-                                                                } else if (o1.getName().compareTo(o2.getName())<0) {
-                                                                    return-1;
-                                                                }else {
-                                                                    return 0;
-                                                                }
-                                                            }
-                                                        });
-                                                        for(int i = 0;i<forPrint.size();i++){
-                                                            out += forPrint.get(i).getName() +"\n";
-                                                        }
-                                                    }else if ( searchable[10].equals("contryCode")){
-                                                        for(Map.Entry<String,Country> c : countries.entrySet()){
-                                                            if(c.getValue().getPopulation()>Double.parseDouble(searchable[7])){
-                                                                forPrint.add(c.getValue());//Por el nombre del pais al que pertenece
-
-                                                            }
-                                                        }
-                                                        forPrint.sort(new Comparator<Country>() {
-                                                            @Override
-                                                            public int compare(Country o1, Country o2) {
-                                                                if(o1.getCountryCode().compareTo(o2.getCountryCode())>0){
-                                                                    return 1;
-                                                                } else if (o1.getCountryCode().compareTo(o2.getCountryCode())<0) {
-                                                                    return-1;
-                                                                }else {
-                                                                    return 0;
-                                                                }
-                                                            }
-                                                        });
-                                                        for(int i = 0;i<forPrint.size();i++){
-                                                            out += forPrint.get(i).getName()+ " : " + forPrint.get(i).getCountryCode() +"\n";
-                                                        }
-                                                    }else {
-                                                        throw new WrongFormatException("This variable for sorting is invalid.");
-                                                    }
-                                                    break;
-
-                                                case ("<"):
-                                                    if(searchable[10].equals("id")){
-
-                                                            for(Map.Entry<String,Country> c : countries.entrySet()){
-                                                                if(c.getValue().getPopulation()<Double.parseDouble(searchable[7])){
-                                                                    forPrint.add(c.getValue());//Por el nombre del pais al que pertenece
-
-                                                                }
-                                                            }
-                                                            forPrint.sort(new Comparator<Country>() {
-                                                                @Override
-                                                                public int compare(Country o1, Country o2) {
-                                                                    if(o1.getId().compareTo(o2.getId())>0){
-                                                                        return 1;
-                                                                    } else if (o1.getId().compareTo(o2.getId())<0) {
-                                                                        return-1;
-                                                                    }else {
-                                                                        return 0;
-                                                                    }
-                                                                }
-                                                            });
-                                                            for(int i = 0;i<forPrint.size();i++){
-                                                                out += forPrint.get(i).getId() +"\n";
-                                                            }//buscar paises con una poblacio menor a searchable[7] y agregarlos al arreglo para imprimir;
-                                                    } else if (searchable[10].equals("name")) {
-                                                            for(Map.Entry<String,Country> c : countries.entrySet()){
-                                                                if(c.getValue().getPopulation()<Double.parseDouble(searchable[7])){
-                                                                    forPrint.add(c.getValue());//Por el nombre del pais al que pertenece
-
-                                                                }
-                                                            }
-                                                            forPrint.sort(new Comparator<Country>() {
-                                                                @Override
-                                                                public int compare(Country o1, Country o2) {
-                                                                    if(o1.getName().compareTo(o2.getName())>0){
-                                                                        return 1;
-                                                                    } else if (o1.getName().compareTo(o2.getName())<0) {
-                                                                        return-1;
-                                                                    }else {
-                                                                        return 0;
-                                                                    }
-                                                                }
-                                                            });
-                                                            for(int i = 0;i<forPrint.size();i++){
-                                                                out += forPrint.get(i).getName() +"\n";
-                                                            }
-                                                    }else if ( searchable[10].equals("contryCode")){
-                                                            for(Map.Entry<String,Country> c : countries.entrySet()){
-                                                                if(c.getValue().getPopulation()<Double.parseDouble(searchable[7])){
-                                                                    forPrint.add(c.getValue());//Por el nombre del pais al que pertenece
-
-                                                                }
-                                                            }
-                                                            forPrint.sort(new Comparator<Country>() {
-                                                                @Override
-                                                                public int compare(Country o1, Country o2) {
-                                                                    if(o1.getCountryCode().compareTo(o2.getCountryCode())>0){
-                                                                        return 1;
-                                                                    } else if (o1.getCountryCode().compareTo(o2.getCountryCode())<0) {
-                                                                        return-1;
-                                                                    }else {
-                                                                        return 0;
-                                                                    }
-                                                                }
-                                                            });
-                                                            for(int i = 0;i<forPrint.size();i++){
-                                                                out += forPrint.get(i).getName()+ " : " + forPrint.get(i).getCountryCode() +"\n";
-                                                            }
-                                                    }else {
-                                                        throw new WrongFormatException("This variable for sorting is invalid.");
-                                                    }
-                                                    break;
-
-                                                case ("="):
-
-                                                    if(searchable[10].equals("id")){
-                                                        for(Map.Entry<String,Country> c : countries.entrySet()){
-                                                            if(c.getValue().getPopulation()==Double.parseDouble(searchable[7])){
-                                                                forPrint.add(c.getValue());//Por el nombre del pais al que pertenece
-
-                                                            }
-                                                        }
-                                                        forPrint.sort(new Comparator<Country>() {
-                                                            @Override
-                                                            public int compare(Country o1, Country o2) {
-                                                                if(o1.getId().compareTo(o2.getId())>0){
-                                                                    return 1;//buscar paises con una poblacio igual a searchable[7] y agregarlos al arreglo para imprimir;
-                                                                } else if (o1.getId().compareTo(o2.getId())<0) {
-                                                                    return-1;
-                                                                }else {
-                                                                    return 0;
-                                                                }
-                                                            }
-                                                        });
-                                                        for(int i = 0;i<forPrint.size();i++){
-                                                            out += forPrint.get(i).getId() +"\n";
-                                                        }
-                                                    } else if (searchable[10].equals("name")) {
-                                                        for(Map.Entry<String,Country> c : countries.entrySet()){
-                                                            if(c.getValue().getPopulation()==Double.parseDouble(searchable[7])){
-                                                                forPrint.add(c.getValue());//Por el nombre del pais al que pertenece
-
-                                                            }
-                                                        }
-                                                        forPrint.sort(new Comparator<Country>() {
-                                                            @Override
-                                                            public int compare(Country o1, Country o2) {
-                                                                if(o1.getName().compareTo(o2.getName())>0){
-                                                                    return 1;
-                                                                } else if (o1.getName().compareTo(o2.getName())<0) {
-                                                                    return-1;
-                                                                }else {
-                                                                    return 0;
-                                                                }
-                                                            }
-                                                        });
-                                                        for(int i = 0;i<forPrint.size();i++){
-                                                            out += forPrint.get(i).getName() +"\n";
-                                                        }
-                                                    }else if ( searchable[10].equals("contryCode")){
-                                                        for(Map.Entry<String,Country> c : countries.entrySet()){
-                                                            if(c.getValue().getPopulation()==Double.parseDouble(searchable[7])){
-                                                                forPrint.add(c.getValue());//Por el nombre del pais al que pertenece
-
-                                                            }
-                                                        }
-                                                        forPrint.sort(new Comparator<Country>() {
-                                                            @Override
-                                                            public int compare(Country o1, Country o2) {
-                                                                if(o1.getCountryCode().compareTo(o2.getCountryCode())>0){
-                                                                    return 1;
-                                                                } else if (o1.getCountryCode().compareTo(o2.getCountryCode())<0) {
-                                                                    return-1;
-                                                                }else {
-                                                                    return 0;
-                                                                }
-                                                            }
-                                                        });
-                                                        for(int i = 0;i<forPrint.size();i++){
-                                                            out += forPrint.get(i).getName()+ " : " + forPrint.get(i).getCountryCode() +"\n";
-                                                        }
-                                                    }else {
-                                                        throw new WrongFormatException("This variable for sorting is invalid.");
-                                                    }
-                                                break;
-
-                                                default:
-                                                    throw new InvalidOperandException("The operand " + searchable[5] + " is not valid.");
-                                            }
-                                        break;
-
-                                        case ("name"):
-                                            if(searchable[6].equals("=")){
-                                                switch (searchable[10]){
-                                                    case ("id"):
-                                                        for(Map.Entry<String,Country> c : countries.entrySet()){
-                                                            if(c.getValue().getName().equals(searchable[7])){
-                                                                forPrint.add(c.getValue());//Por el nombre del pais al que pertenece
-
-                                                            }
-                                                        }
-                                                        forPrint.sort(new Comparator<Country>() {
-                                                            @Override
-                                                            public int compare(Country o1, Country o2) {
-                                                                if(o1.getId().compareTo(o2.getId())>0){
-                                                                    return 1;
-                                                                } else if (o1.getId().compareTo(o2.getId())<0) {
-                                                                    return-1;
-                                                                }else {
-                                                                    return 0;
-                                                                }
-                                                            }
-                                                        });
-                                                        for(int i = 0;i<forPrint.size();i++){
-                                                            out += forPrint.get(i).getId()+ "\n";
-                                                        }
-                                                    break;
-                                                    case ("population"):
-                                                        for(Map.Entry<String,Country> c : countries.entrySet()){
-                                                            if(c.getValue().getName().equals(searchable[7])){
-                                                                forPrint.add(c.getValue());//Por el nombre del pais al que pertenece
-
-                                                            }
-                                                        }
-                                                        forPrint.sort(new Comparator<Country>() {
-                                                            @Override
-                                                            public int compare(Country o1, Country o2) {
-                                                                if(o1.getPopulation()> o2.getPopulation()){
-                                                                    return 1;
-                                                                } else if (o1.getPopulation()<o2.getPopulation()) {
-                                                                    return-1;
-                                                                }else {
-                                                                    return 0;
-                                                                }
-                                                            }
-                                                        });
-                                                        for(int i = 0;i<forPrint.size();i++){
-                                                            out += forPrint.get(i).getName() + " : " + forPrint.get(i).getPopulation() + " \n";
-                                                        }
-                                                    break;
+                                            if(searchable.length==11){
+                                                if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
+                                                    out = sortCity(forPrintCity,searchable[9]);
+                                                }else {
+                                                    throw new WrongFormatException("The format for sorting is invalid");
                                                 }
                                             }else {
-                                                throw new WrongFormatException("The symbol " + searchable[6] + " is invalid for the variable name");
+                                                for(int i = 0;i<forPrintCity.size();i++){
+                                                    out += forPrintCity.get(i).toString()+"\n";
+                                                }
                                             }
                                         break;
-
+                                        case ("<"):
+                                            for(Map.Entry<String,City> c : cities.entrySet()){
+                                                if(c.getValue().getPopulation()<Double.parseDouble(searchable[7])){
+                                                    forPrintCity.add(c.getValue());
+                                                }
+                                            }
+                                            if(searchable.length==11){
+                                                if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
+                                                    out = sortCity(forPrintCity,searchable[9]);
+                                                }else {
+                                                    throw new WrongFormatException("The format for sorting is invalid");
+                                                }
+                                            }else {
+                                                for(int i = 0;i<forPrintCity.size();i++){
+                                                    out += forPrintCity.get(i).toString()+"\n";
+                                                }
+                                            }
+                                        break;
+                                        case ("="):
+                                            for(Map.Entry<String,City> c : cities.entrySet()){
+                                                if(c.getValue().getPopulation()==Double.parseDouble(searchable[7])){
+                                                    forPrintCity.add(c.getValue());
+                                                }
+                                            }
+                                            if(searchable.length==11){//Verifico si hay que hacerle sort
+                                                if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
+                                                    out = sortCity(forPrintCity,searchable[9]);
+                                                }else {
+                                                    throw new WrongFormatException("The format for sorting is invalid");
+                                                }
+                                            }else {
+                                                for(int i = 0;i<forPrintCity.size();i++){
+                                                    out += forPrintCity.get(i).toString()+"\n";
+                                                }
+                                            }
+                                        break;
                                         default:
-                                            throw new WrongFormatException("You only can search contries and sort them by the variables of population,name and contryCode");
+                                            throw new InvalidOperandException("This operand for this search is invalid.");
                                     }
-
-                                    break;
-
+                                break;
+                                case("name"):
+                                    if(searchable[6].equals("=")){
+                                        String [] comillas = toSearch.split("'");
+                                        for(Map.Entry<String,City> c : cities.entrySet()){
+                                            if(c.getValue().getName().equals(comillas[1])){
+                                                forPrintCity.add(c.getValue());
+                                            }
+                                        }
+                                        if(searchable.length==11){//Verifico si hay que hacerle sort
+                                            if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
+                                                sortCity(forPrintCity,searchable[9]);
+                                            }else {
+                                                throw new WrongFormatException("The format for sorting is invalid");
+                                            }
+                                        }else {
+                                            for(int i = 0;i<forPrintCity.size();i++){
+                                                out += forPrintCity.get(i).toString()+"\n";
+                                            }
+                                        }
+                                    }else {
+                                        throw new WrongFormatException("The value of " + searchable[6] + " is invalid for the variable name");
+                                    }
+                                break;
+                                case ("id"):
+                                    if(searchable[6].equals("=")){
+                                        String [] comillas = toSearch.split("'");
+                                        for(Map.Entry<String,City> c : cities.entrySet()){
+                                            if(c.getValue().getId().equals(comillas[1])){
+                                                forPrintCity.add(c.getValue());
+                                            }
+                                        }
+                                        if(searchable.length==11){//Verifico si hay que hacerle sort
+                                            if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
+                                                sortCity(forPrintCity,searchable[9]);
+                                            }else {
+                                                throw new WrongFormatException("The format for sorting is invalid");
+                                            }
+                                        }else {
+                                            for(int i = 0;i<forPrintCity.size();i++){
+                                                out += forPrintCity.get(i).toString()+"\n";
+                                            }
+                                        }
+                                    }else {
+                                        throw new WrongFormatException("The value of " + searchable[6] + " is invalid for the variable name");
+                                    }
+                                break;
+                                case ("countryId"):
+                                    if(searchable[6].equals("=")){
+                                        String [] comillas = toSearch.split("'");
+                                        for(Map.Entry<String,City> c : cities.entrySet()){
+                                            if(c.getValue().getCountryId().equals(comillas[1])){
+                                                forPrintCity.add(c.getValue());
+                                            }
+                                        }
+                                        if(searchable.length==11){//Verifico si hay que hacerle sort
+                                            if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
+                                                sortCity(forPrintCity,searchable[9]);
+                                            }else {
+                                                throw new WrongFormatException("The format for sorting is invalid");
+                                            }
+                                        }else {
+                                            for(int i = 0;i<forPrintCity.size();i++){
+                                                out += forPrintCity.get(i).toString()+"\n";
+                                            }
+                                        }
+                                    }else {
+                                        throw new WrongFormatException("The value of " + searchable[6] + " is invalid for the variable name");
+                                    }
+                                break;
                                 default:
-                                    throw new WrongFormatException("Ahora veo que pongo.");
-
-
+                                    throw new WrongFormatException("The variable for search is invalid for the format.");
                             }
 
-                        }
-                    }
 
 
-                    //show everything
-                } else if (longit == 4) {
-
-                    if (searchable[0].equals("SELECT") && searchable[1].equals("*") && searchable[2].equals("FROM")) {
-
-                        switch (searchable[3]) {
-
-                            case ("countries"):
-                                for(Map.Entry<String,Country> c : countries.entrySet()){
-                                    out += c.getValue().toString() + "\n";
-                                }
-                                break;
-                            case ("cities"):
-                                for(Map.Entry<String,City> c : cities.entrySet()){
-                                    out += c.getValue().toString() + " \n";
-                                }//show every city
-                                break;
-
-                            default:
-                                throw new InvalidOperandException("This variable is not valid");
-
+                        }else {
+                            throw new WrongFormatException("The format is wrong because is missing WHERE");
                         }
 
-                    }
 
-                    //search
-                } else {
-
-                    if (searchable[0].equals("SELECT") && searchable[1].equals("*") && searchable[2].equals("FROM") && searchable[4].equals("WHERE")) {
-
-                        switch (searchable[3]) {
-
-                            case ("countries"):
-
-                                ArrayList<Country> forPrint = new ArrayList<>();
-
-                                switch (searchable[5]) {
-
-                                    case ("id"):
-                                        if (searchable[6].equals("=")) {
-                                            for(Map.Entry<String,Country> c : countries.entrySet()){
-                                                if(c.getValue().getId().equals(searchable[7])){
-                                                    forPrint.add(c.getValue());//buscar en paises el id de ese pais
-                                                }
-                                            }
-                                            for (int i = 0; i<forPrint.size();i++){
-                                                out+= forPrint.get(i).toString() + " \n";
-                                            }
-                                        } else {
-                                            throw new InvalidOperandException("The operand " + searchable[6] + " is not valid.");
-                                        }
-                                        break;
-                                    case ("name"):
-                                        if (searchable[6].equals("=")) {
-                                            for(Map.Entry<String,Country> c : countries.entrySet()){
-                                                if(c.getValue().getName().equals(searchable[7])){
-                                                    forPrint.add(c.getValue());//buscar en paises el nombre de ese pais
-                                                }
-                                            }
-                                            for (int i = 0; i<forPrint.size();i++){
-                                                out+= forPrint.get(i).toString() + " \n";
-                                            }
-                                        } else {
-                                            throw new InvalidOperandException("The operand " + searchable[6] + " is invalid.");
-                                        }
-                                        break;
-                                    case ("countryCode"):
-                                        if (searchable[6].equals("=")) {
-                                            for(Map.Entry<String,Country> c : countries.entrySet()){
-                                                if(c.getValue().getCountryCode().equals(searchable[7])){
-                                                    forPrint.add(c.getValue());//buscar en paises el code de ese pais
-                                                }
-                                            }
-                                            for (int i = 0; i<forPrint.size();i++){
-                                                out+= forPrint.get(i).toString() + " \n";
-                                            }
-                                        } else {
-                                            throw new InvalidOperandException("The operand " + searchable[6] + " is not a valid one.");
-                                        }
-                                        break;
-                                    case ("population"):
-
-                                        switch (searchable[6]) {
-
-                                            case (">"):
-                                                for(Map.Entry<String,Country> c : countries.entrySet()){
-                                                    if(c.getValue().getPopulation()>Double.parseDouble(searchable[7])){
-                                                        forPrint.add(c.getValue());//buscar los paises con poblacion mayor a searchable[7]
-                                                    }
-                                                }
-                                                for (int i = 0; i<forPrint.size();i++){
-                                                    out+= forPrint.get(i).toString() + " \n";
-                                                }
-                                                break;
-                                            case ("<"):
-                                                for(Map.Entry<String,Country> c : countries.entrySet()){
-                                                    if(c.getValue().getPopulation()<Double.parseDouble(searchable[7])){
-                                                        forPrint.add(c.getValue());//buscar los paises con poblacion menor a searchable[7]
-                                                    }
-                                                }
-                                                for (int i = 0; i<forPrint.size();i++){
-                                                    out+= forPrint.get(i).toString() + " \n";
-                                                }
-                                                break;
-                                            case ("="):
-                                                for(Map.Entry<String,Country> c : countries.entrySet()){
-                                                    if(c.getValue().getPopulation()==Double.parseDouble(searchable[7])){
-                                                        forPrint.add(c.getValue());//buscar los paises con poblacion igual a searchable[7]
-                                                    }
-                                                }
-                                                for (int i = 0; i<forPrint.size();i++){
-                                                    out+= forPrint.get(i).toString() + " \n";
-                                                }
-                                                break;
-                                            default:
-                                                throw new InvalidOperandException("The operand " + searchable[6] + " is not valid.");
-
-                                        }
-
-                                        break;
-                                    default:
-                                        throw new InvalidOperandException("The variable is invalid");
-                                }
-                                break;
-
-                            case ("cities"):
-
-                                ArrayList<City> forPrintCity = new ArrayList<>();
-
-                                switch (searchable[5]) {
-
-                                    case ("id"):
-                                        if (searchable[6].equals("=")) {
-                                            for(Map.Entry<String, City> c : cities.entrySet()){
-                                                if(c.getValue().getId().equals(searchable[7])){
-                                                    forPrintCity.add(c.getValue());//buscar en paises el id de esa ciudad
-                                                }
-                                            }
-                                            for (int i = 0; i<forPrintCity.size();i++){
-                                                out+= forPrintCity.get(i).toString() + " \n";
-                                            }
-                                        } else {
-                                            throw new InvalidOperandException("The operand " + searchable[6] + " is not valid.");
-                                        }
-                                        break;
-                                    case ("name"):
-                                        if (searchable[6].equals("=")) {
-                                            for(Map.Entry<String, City> c : cities.entrySet()){
-                                                if(c.getValue().getName().equals(searchable[7])){
-                                                    forPrintCity.add(c.getValue());//buscar en paises el nombre de ese pais
-                                                }
-                                            }
-                                            for (int i = 0; i<forPrintCity.size();i++){
-                                                out+= forPrintCity.get(i).toString() + " \n";
-                                            }
-                                        } else {
-                                            throw new InvalidOperandException("The operand " + searchable[6] + " is not valid one.");
-                                        }
-                                        break;
-                                    case ("countryId"):
-                                        if (searchable[6].equals("=")) {
-                                            for(Map.Entry<String, City> c : cities.entrySet()){
-                                                if(c.getValue().getCountryId().equals(searchable[7])){
-                                                    forPrintCity.add(c.getValue());//buscar en paises el code de ese pais
-                                                }
-                                            }
-                                            for (int i = 0; i<forPrintCity.size();i++){
-                                                out+= forPrintCity.get(i).toString() + " \n";
-                                            }
-                                        } else {
-                                            throw new InvalidOperandException("The operand " + searchable[6] + " is  invalid.");
-                                        }
-                                        break;
-                                    case ("population"):
-
-                                        switch (searchable[6]) {
-
-                                            case (">"):
-                                                for(Map.Entry<String, City> c : cities.entrySet()){
-                                                    if(c.getValue().getPopulation()>Double.parseDouble(searchable[7])){
-                                                        forPrintCity.add(c.getValue());//buscar las ciudades y paises con poblacion mayor a searchable[7]
-                                                    }
-                                                }
-                                                for (int i = 0; i<forPrintCity.size();i++){
-                                                    out+= forPrintCity.get(i).toString() + " \n";
-                                                }
-                                                break;
-                                            case ("<"):
-                                                for(Map.Entry<String, City> c : cities.entrySet()){
-                                                    if(c.getValue().getPopulation()<Double.parseDouble(searchable[7])){
-                                                        forPrintCity.add(c.getValue());//buscar las ciudades y paises con poblacion menor a searchable[7]
-                                                    }
-                                                }
-                                                for (int i = 0; i<forPrintCity.size();i++){
-                                                    out+= forPrintCity.get(i).toString() + " \n";
-                                                }
-                                                break;
-                                            case ("="):
-                                                for(Map.Entry<String, City> c : cities.entrySet()){
-                                                    if(c.getValue().getPopulation()==Double.parseDouble(searchable[7])){
-                                                        forPrintCity.add(c.getValue());//buscar las ciudades y paises con poblacion igual a searchable[7]
-                                                    }
-                                                }
-                                                for (int i = 0; i<forPrintCity.size();i++){
-                                                    out+= forPrintCity.get(i).toString() + " \n";
-                                                }
-                                                break;
-                                            default:
-                                                throw new InvalidOperandException("The operand " + searchable[6] + " is not valid.");
-
-                                        }
-
-                                        break;
-                                    default:
-                                        throw new InvalidOperandException("The variable is invalid");
-                                }
-
-                                break;
-
-
+                    }else {
+                        //show every city
+                        for(Map.Entry<String,City> c : cities.entrySet()){
+                            out += c.getValue().toString() + " \n";
                         }
-
-                    } else {
-                        throw new WrongFormatException("The format of the command is invalid.");
                     }
-                }
+                break;
+                case ("countries"):
+                    ArrayList<Country>forPrintCountry = new ArrayList<>();
+                    if(searchable.length>4){
+                        if (searchable[4].equals("WHERE")) {
+                            switch (searchable[5]){
+                                case ("population"):
+                                    switch (searchable[6]){
+                                        case ("<"):
+                                            for(Map.Entry<String,Country> c : countries.entrySet()){
+                                                if(c.getValue().getPopulation()<Double.parseDouble(searchable[7])){
+                                                    forPrintCountry.add(c.getValue());
+                                                }
+                                            }
+                                            if(searchable.length==11){//Verifico si hay que hacerle sort
+                                                if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
+                                                    out = sortCountry(forPrintCountry,searchable[9]);
+                                                }else {
+                                                    throw new WrongFormatException("The format for sorting is invalid");
+                                                }
+                                            }else {
+                                                for(int i = 0;i<forPrintCountry.size();i++){
+                                                    out += forPrintCountry.get(i).toString()+"\n";
+                                                }
+                                            }
+                                        break;
+                                        case (">"):
+                                            for(Map.Entry<String,Country> c : countries.entrySet()){
+                                                if(c.getValue().getPopulation()>Double.parseDouble(searchable[7])){
+                                                    forPrintCountry.add(c.getValue());
+                                                }
+                                            }
+                                            if(searchable.length==11){//Verifico si hay que hacerle sort
+                                                if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
+                                                    out = sortCountry(forPrintCountry,searchable[9]);
+                                                }else {
+                                                    throw new WrongFormatException("The format for sorting is invalid");
+                                                }
+                                            }else {
+                                                for(int i = 0;i<forPrintCountry.size();i++){
+                                                    out += forPrintCountry.get(i).toString()+"\n";
+                                                }
+                                            }
+                                            break;
+                                        case ("="):
+                                            for(Map.Entry<String,Country> c : countries.entrySet()){
+                                                if(c.getValue().getPopulation()==Double.parseDouble(searchable[7])){
+                                                    forPrintCountry.add(c.getValue());
+                                                }
+                                            }
+                                            if(searchable.length==11){//Verifico si hay que hacerle sort
+                                                if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
+                                                    out = sortCountry(forPrintCountry,searchable[9]);
+                                                }else {
+                                                    throw new WrongFormatException("The format for sorting is invalid");
+                                                }
+                                            }else {
+                                                for(int i = 0;i<forPrintCountry.size();i++){
+                                                    out += forPrintCountry.get(i).toString()+"\n";
+                                                }
+                                            }
+                                            break;
+                                        default:
+                                            throw new InvalidOperandException("The operand for the search with population is not valid.");
+                                    }
+                                break;
+                                case ("id"):
 
-            }else {
-                throw new WrongFormatException("The format of the command for search is invalid");
+                                    if(searchable[6].equals("=")) {
+                                        String [] comillas = toSearch.split("'");
+                                        for (Map.Entry<String, Country> c : countries.entrySet()) {
+                                            if (c.getValue().getId().equals(comillas[1])) {
+                                                forPrintCountry.add(c.getValue());
+                                            }
+                                        }
+                                        if (searchable.length == 11) {//Verifico si hay que hacerle sort
+                                            if (searchable[8].equals("ORDER") && searchable[9].equals("BY")) {
+                                                out = sortCountry(forPrintCountry, searchable[9]);
+                                            } else {
+                                                throw new WrongFormatException("The format for sorting is invalid");
+                                            }
+                                        } else {
+                                            for (int i = 0; i < forPrintCountry.size(); i++) {
+                                                out += forPrintCountry.get(i).toString() + "\n";
+                                            }
+                                        }
+                                    } else {
+                                        throw new InvalidOperandException("For search by id you must use the operand =");
+                                    }
+                                    break;
+                                case("name"):
+
+                                    if(searchable[6].equals("=")) {
+                                        String [] comillas = toSearch.split("'");
+                                        for (Map.Entry<String, Country> c : countries.entrySet()) {
+                                            if (c.getValue().getName().equals(comillas[1])) {
+                                                forPrintCountry.add(c.getValue());
+                                            }
+                                        }
+                                        if (searchable.length == 11) {//Verifico si hay que hacerle sort
+                                            if (searchable[8].equals("ORDER") && searchable[9].equals("BY")) {
+                                                out = sortCountry(forPrintCountry, searchable[9]);
+                                            } else {
+                                                throw new WrongFormatException("The format for sorting is invalid");
+                                            }
+                                        } else {
+                                            for (int i = 0; i < forPrintCountry.size(); i++) {
+                                                out += forPrintCountry.get(i).toString() + "\n";
+                                            }
+                                        }
+                                    }else {
+                                        throw new InvalidOperandException("For search a name you must use the operand =");
+                                    }
+                                    break;
+                                case ("contryCode"):
+
+                                    if(searchable[6].equals("=")) {
+                                        String [] comillas = toSearch.split("'");
+                                        for (Map.Entry<String, Country> c : countries.entrySet()) {
+                                            if (c.getValue().getCountryCode().equals(comillas[1])) {
+                                                forPrintCountry.add(c.getValue());
+                                            }
+                                        }
+                                        if (searchable.length == 11) {//Verifico si hay que hacerle sort
+                                            if (searchable[8].equals("ORDER") && searchable[9].equals("BY")) {
+                                                out = sortCountry(forPrintCountry, searchable[9]);
+                                            } else {
+                                                throw new WrongFormatException("The format for sorting is invalid");
+                                            }
+                                        } else {
+                                            for (int i = 0; i < forPrintCountry.size(); i++) {
+                                                out += forPrintCountry.get(i).toString() + "\n";
+                                            }
+                                        }
+                                    }else {
+                                        throw new InvalidOperandException("For search by CountryCode you must use the operand =");
+                                    }
+                                break;
+                                default:
+                                    throw new WrongFormatException("The variable is not valid for search");
+                            }
+                        }
+                    }else {
+                        //show every country
+                        for(Map.Entry<String,Country> c : countries.entrySet()){
+                            out += c.getValue().toString() + "\n";
+                        }
+                    }
+                break;
+                default:
+                    throw new WrongFormatException("You can only search a country or a city");
             }
-            return out;
+
+        }else {
+            throw new WrongFormatException("The format of the command is invalid");
+        }
+
+        return out;
     }
+
+    public String sortCity(ArrayList<City> array,String parameter){
+
+        String out = "";
+
+        switch (parameter){
+            case ("population"):
+                array.sort(new Comparator<City>() {
+                    @Override
+                    public int compare(City o1, City o2) {
+                        if(o1.getPopulation()>o2.getPopulation()){
+                            return 1;
+                        }else if (o1.getPopulation()<o2.getPopulation()){
+                            return -1;
+                        }else
+                            return 0;
+                    }
+                });
+                Collections.reverse(array);
+                for(int i = 0;i<array.size();i++){
+                    out += array.get(i).getName() +"  population: " + array.get(i).getPopulation();
+                }
+            break;
+            case ("name"):
+                array.sort(new Comparator<City>() {
+                    @Override
+                    public int compare(City o1, City o2) {
+                        if(o1.getName().compareTo(o2.getName())>0){
+                            return 1;
+                        }else if (o1.getName().compareTo(o2.getName())<0){
+                            return -1;
+                        }else
+                            return 0;
+                    }
+                });
+                Collections.reverse(array);
+                for(int i = 0;i<array.size();i++){
+                    out += array.get(i).getName();
+                }
+                break;
+            case ("id"):
+                array.sort(new Comparator<City>() {
+                    @Override
+                    public int compare(City o1, City o2) {
+                        if(o1.getId().compareTo(o2.getId())>0){
+                            return 1;
+                        }else if (o1.getId().compareTo(o2.getId())<0){
+                            return -1;
+                        }else
+                            return 0;
+                    }
+                });
+                Collections.reverse(array);
+                for(int i = 0;i<array.size();i++){
+                    out += array.get(i).getName() + " id :" + array.get(i).getId();
+                }
+            case ("countryId"):
+                array.sort(new Comparator<City>() {
+                    @Override
+                    public int compare(City o1, City o2) {
+                        if(o1.getCountryId().compareTo(o2.getCountryId())>0){
+                            return 1;
+                        }else if (o1.getCountryId().compareTo(o2.getCountryId())<0){
+                            return -1;
+                        }else
+                            return 0;
+                    }
+                });
+                Collections.reverse(array);
+                for(int i = 0;i<array.size();i++){
+                    out += array.get(i).getName() + " id :" + array.get(i).getCountryId();
+                }
+            break;
+            default:
+                throw new WrongFormatException("That variable is not valid for order the information");
+        }
+
+        return out;
+    }
+    public String sortCountry(ArrayList<Country> array,String parameter){
+        String out = "";
+
+        switch (parameter){
+            case ("population"):
+                array.sort(new Comparator<Country>() {
+                    @Override
+                    public int compare(Country o1, Country o2) {
+                        if(o1.getPopulation()>o2.getPopulation()){
+                            return 1;
+                        }else if (o1.getPopulation()<o2.getPopulation()){
+                            return -1;
+                        }else
+                            return 0;
+                    }
+                });
+                Collections.reverse(array);
+                for(int i = 0;i<array.size();i++){
+                    out += array.get(i).getName() +"  population: " + array.get(i).getPopulation();
+                }
+                break;
+            case ("name"):
+                array.sort(new Comparator<Country>() {
+                    @Override
+                    public int compare(Country o1, Country o2) {
+                        if(o1.getName().compareTo(o2.getName())>0){
+                            return 1;
+                        }else if (o1.getName().compareTo(o2.getName())<0){
+                            return -1;
+                        }else
+                            return 0;
+                    }
+                });
+                Collections.reverse(array);
+                for(int i = 0;i<array.size();i++){
+                    out += array.get(i).getName();
+                }
+                break;
+            case ("id"):
+                array.sort(new Comparator<Country>() {
+                    @Override
+                    public int compare(Country o1, Country o2) {
+                        if(o1.getId().compareTo(o2.getId())>0){
+                            return 1;
+                        }else if (o1.getId().compareTo(o2.getId())<0){
+                            return -1;
+                        }else
+                            return 0;
+                    }
+                });
+                Collections.reverse(array);
+                for(int i = 0;i<array.size();i++){
+                    out += array.get(i).getName() + " id :" + array.get(i).getId();
+                }
+            case ("countryCode"):
+                array.sort(new Comparator<Country>() {
+                    @Override
+                    public int compare(Country o1, Country o2) {
+                        if(o1.getCountryCode().compareTo(o2.getCountryCode())>0){
+                            return 1;
+                        }else if (o1.getCountryCode().compareTo(o2.getCountryCode())<0){
+                            return -1;
+                        }else
+                            return 0;
+                    }
+                });
+                Collections.reverse(array);
+                for(int i = 0;i<array.size();i++){
+                    out += array.get(i).getName() + " id :" + array.get(i).getCountryCode();
+                }
+                break;
+            default:
+                throw new WrongFormatException("That variable is not valid for order the information");
+        }
+
+        return out;
+    }
+
+
 
 
 
