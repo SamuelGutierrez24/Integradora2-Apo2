@@ -73,12 +73,13 @@ public class Control {
     public String search(String toSearch){
         String out = "";
         String [] searchable = toSearch.split(" ");
+        String [] comillas = null;
 
         if(searchable[0].equals("SELECT") && searchable[1].equals("*") && searchable[2].equals("FROM")){
-
+            ArrayList<City> forPrintCity = new ArrayList<>();
             switch (searchable[3]){
                 case ("cities"):
-                    ArrayList<City> forPrintCity = new ArrayList<>();
+
                     if(searchable.length>4){
 
                         if(searchable[4].equals("WHERE")){
@@ -92,33 +93,11 @@ public class Control {
                                                     forPrintCity.add(c.getValue());
                                                 }
                                             }
-                                            if(searchable.length==11){
-                                                if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
-                                                    out = sortCity(forPrintCity,searchable[9]);
-                                                }else {
-                                                    throw new WrongFormatException("The format for sorting is invalid");
-                                                }
-                                            }else {
-                                                for(int i = 0;i<forPrintCity.size();i++){
-                                                    out += forPrintCity.get(i).toString()+"\n";
-                                                }
-                                            }
                                         break;
                                         case ("<"):
                                             for(Map.Entry<String,City> c : cities.entrySet()){
                                                 if(c.getValue().getPopulation()<Double.parseDouble(searchable[7])){
                                                     forPrintCity.add(c.getValue());
-                                                }
-                                            }
-                                            if(searchable.length==11){
-                                                if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
-                                                    out = sortCity(forPrintCity,searchable[9]);
-                                                }else {
-                                                    throw new WrongFormatException("The format for sorting is invalid");
-                                                }
-                                            }else {
-                                                for(int i = 0;i<forPrintCity.size();i++){
-                                                    out += forPrintCity.get(i).toString()+"\n";
                                                 }
                                             }
                                         break;
@@ -128,17 +107,6 @@ public class Control {
                                                     forPrintCity.add(c.getValue());
                                                 }
                                             }
-                                            if(searchable.length==11){//Verifico si hay que hacerle sort
-                                                if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
-                                                    out = sortCity(forPrintCity,searchable[9]);
-                                                }else {
-                                                    throw new WrongFormatException("The format for sorting is invalid");
-                                                }
-                                            }else {
-                                                for(int i = 0;i<forPrintCity.size();i++){
-                                                    out += forPrintCity.get(i).toString()+"\n";
-                                                }
-                                            }
                                         break;
                                         default:
                                             throw new InvalidOperandException("This operand for this search is invalid.");
@@ -146,21 +114,10 @@ public class Control {
                                 break;
                                 case("name"):
                                     if(searchable[6].equals("=")){
-                                        String [] comillas = toSearch.split("'");
+                                        comillas = toSearch.split("'");
                                         for(Map.Entry<String,City> c : cities.entrySet()){
                                             if(c.getValue().getName().equals(comillas[1])){
                                                 forPrintCity.add(c.getValue());
-                                            }
-                                        }
-                                        if(searchable.length==11){//Verifico si hay que hacerle sort
-                                            if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
-                                                sortCity(forPrintCity,searchable[9]);
-                                            }else {
-                                                throw new WrongFormatException("The format for sorting is invalid");
-                                            }
-                                        }else {
-                                            for(int i = 0;i<forPrintCity.size();i++){
-                                                out += forPrintCity.get(i).toString()+"\n";
                                             }
                                         }
                                     }else {
@@ -169,21 +126,10 @@ public class Control {
                                 break;
                                 case ("id"):
                                     if(searchable[6].equals("=")){
-                                        String [] comillas = toSearch.split("'");
+                                        comillas = toSearch.split("'");
                                         for(Map.Entry<String,City> c : cities.entrySet()){
                                             if(c.getValue().getId().equals(comillas[1])){
                                                 forPrintCity.add(c.getValue());
-                                            }
-                                        }
-                                        if(searchable.length==11){//Verifico si hay que hacerle sort
-                                            if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
-                                                sortCity(forPrintCity,searchable[9]);
-                                            }else {
-                                                throw new WrongFormatException("The format for sorting is invalid");
-                                            }
-                                        }else {
-                                            for(int i = 0;i<forPrintCity.size();i++){
-                                                out += forPrintCity.get(i).toString()+"\n";
                                             }
                                         }
                                     }else {
@@ -192,21 +138,10 @@ public class Control {
                                 break;
                                 case ("countryId"):
                                     if(searchable[6].equals("=")){
-                                        String [] comillas = toSearch.split("'");
+                                        comillas = toSearch.split("'");
                                         for(Map.Entry<String,City> c : cities.entrySet()){
                                             if(c.getValue().getCountryId().equals(comillas[1])){
                                                 forPrintCity.add(c.getValue());
-                                            }
-                                        }
-                                        if(searchable.length==11){//Verifico si hay que hacerle sort
-                                            if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
-                                                sortCity(forPrintCity,searchable[9]);
-                                            }else {
-                                                throw new WrongFormatException("The format for sorting is invalid");
-                                            }
-                                        }else {
-                                            for(int i = 0;i<forPrintCity.size();i++){
-                                                out += forPrintCity.get(i).toString()+"\n";
                                             }
                                         }
                                     }else {
@@ -215,14 +150,42 @@ public class Control {
                                 break;
                                 default:
                                     throw new WrongFormatException("The variable for search is invalid for the format.");
+                            }                            
+                        }
+                        if(toSearch.contains("ORDER BY")){
+                            if(searchable.length>=11){
+                                if(comillas!=null&&comillas.length==3){
+                                    searchable = comillas[2].split(" ");
+                                    if(searchable[0].equals("ORDER") && searchable[1].equals("BY")){
+                                        out = sortCity(forPrintCity,searchable[2]); 
+                                    }else {
+                                        throw new WrongFormatException("The format for sorting is invalid");
+                                    }
+                                }
+                                else if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
+                                    out = sortCity(forPrintCity,searchable[10]); 
+                                }else {
+                                    throw new WrongFormatException("The format for sorting is invalid");
+                                }
                             }
-
-
-
-                        }else {
+                            else if(searchable[4].equals("ORDER")&&searchable[5].equals("BY")){
+                                for(Map.Entry<String,City> c : cities.entrySet()){
+                                    forPrintCity.add(c.getValue());
+                                }
+                                out = sortCity(forPrintCity,searchable[6]);
+                            }
+                            else {
+                                throw new WrongFormatException("The format for sorting is invalid");
+                            }
+                        }
+                        else if(searchable[4].equals("WHERE")){
                             throw new WrongFormatException("The format is wrong because is missing WHERE");
                         }
-
+                        else {
+                            for(int i = 0;i<forPrintCity.size();i++){
+                                out += forPrintCity.get(i).toString()+"\n";
+                            }
+                        }
 
                     }else {
                         //show every city
@@ -244,17 +207,6 @@ public class Control {
                                                     forPrintCountry.add(c.getValue());
                                                 }
                                             }
-                                            if(searchable.length==11){//Verifico si hay que hacerle sort
-                                                if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
-                                                    out = sortCountry(forPrintCountry,searchable[9]);
-                                                }else {
-                                                    throw new WrongFormatException("The format for sorting is invalid");
-                                                }
-                                            }else {
-                                                for(int i = 0;i<forPrintCountry.size();i++){
-                                                    out += forPrintCountry.get(i).toString()+"\n";
-                                                }
-                                            }
                                         break;
                                         case (">"):
                                             for(Map.Entry<String,Country> c : countries.entrySet()){
@@ -262,33 +214,11 @@ public class Control {
                                                     forPrintCountry.add(c.getValue());
                                                 }
                                             }
-                                            if(searchable.length==11){//Verifico si hay que hacerle sort
-                                                if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
-                                                    out = sortCountry(forPrintCountry,searchable[9]);
-                                                }else {
-                                                    throw new WrongFormatException("The format for sorting is invalid");
-                                                }
-                                            }else {
-                                                for(int i = 0;i<forPrintCountry.size();i++){
-                                                    out += forPrintCountry.get(i).toString()+"\n";
-                                                }
-                                            }
                                             break;
                                         case ("="):
                                             for(Map.Entry<String,Country> c : countries.entrySet()){
                                                 if(c.getValue().getPopulation()==Double.parseDouble(searchable[7])){
                                                     forPrintCountry.add(c.getValue());
-                                                }
-                                            }
-                                            if(searchable.length==11){//Verifico si hay que hacerle sort
-                                                if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
-                                                    out = sortCountry(forPrintCountry,searchable[9]);
-                                                }else {
-                                                    throw new WrongFormatException("The format for sorting is invalid");
-                                                }
-                                            }else {
-                                                for(int i = 0;i<forPrintCountry.size();i++){
-                                                    out += forPrintCountry.get(i).toString()+"\n";
                                                 }
                                             }
                                             break;
@@ -299,21 +229,10 @@ public class Control {
                                 case ("id"):
 
                                     if(searchable[6].equals("=")) {
-                                        String [] comillas = toSearch.split("'");
+                                        comillas = toSearch.split("'");
                                         for (Map.Entry<String, Country> c : countries.entrySet()) {
                                             if (c.getValue().getId().equals(comillas[1])) {
                                                 forPrintCountry.add(c.getValue());
-                                            }
-                                        }
-                                        if (searchable.length == 11) {//Verifico si hay que hacerle sort
-                                            if (searchable[8].equals("ORDER") && searchable[9].equals("BY")) {
-                                                out = sortCountry(forPrintCountry, searchable[9]);
-                                            } else {
-                                                throw new WrongFormatException("The format for sorting is invalid");
-                                            }
-                                        } else {
-                                            for (int i = 0; i < forPrintCountry.size(); i++) {
-                                                out += forPrintCountry.get(i).toString() + "\n";
                                             }
                                         }
                                     } else {
@@ -323,21 +242,10 @@ public class Control {
                                 case("name"):
 
                                     if(searchable[6].equals("=")) {
-                                        String [] comillas = toSearch.split("'");
+                                        comillas = toSearch.split("'");
                                         for (Map.Entry<String, Country> c : countries.entrySet()) {
                                             if (c.getValue().getName().equals(comillas[1])) {
                                                 forPrintCountry.add(c.getValue());
-                                            }
-                                        }
-                                        if (searchable.length == 11) {//Verifico si hay que hacerle sort
-                                            if (searchable[8].equals("ORDER") && searchable[9].equals("BY")) {
-                                                out = sortCountry(forPrintCountry, searchable[9]);
-                                            } else {
-                                                throw new WrongFormatException("The format for sorting is invalid");
-                                            }
-                                        } else {
-                                            for (int i = 0; i < forPrintCountry.size(); i++) {
-                                                out += forPrintCountry.get(i).toString() + "\n";
                                             }
                                         }
                                     }else {
@@ -347,21 +255,10 @@ public class Control {
                                 case ("contryCode"):
 
                                     if(searchable[6].equals("=")) {
-                                        String [] comillas = toSearch.split("'");
+                                        comillas = toSearch.split("'");
                                         for (Map.Entry<String, Country> c : countries.entrySet()) {
                                             if (c.getValue().getCountryCode().equals(comillas[1])) {
                                                 forPrintCountry.add(c.getValue());
-                                            }
-                                        }
-                                        if (searchable.length == 11) {//Verifico si hay que hacerle sort
-                                            if (searchable[8].equals("ORDER") && searchable[9].equals("BY")) {
-                                                out = sortCountry(forPrintCountry, searchable[9]);
-                                            } else {
-                                                throw new WrongFormatException("The format for sorting is invalid");
-                                            }
-                                        } else {
-                                            for (int i = 0; i < forPrintCountry.size(); i++) {
-                                                out += forPrintCountry.get(i).toString() + "\n";
                                             }
                                         }
                                     }else {
@@ -370,6 +267,40 @@ public class Control {
                                 break;
                                 default:
                                     throw new WrongFormatException("The variable is not valid for search");
+                            }
+                        }
+                        if(toSearch.contains("ORDER BY")){
+                            if(searchable.length>=11){
+                                if(comillas!=null&&comillas.length==3){
+                                    searchable = comillas[2].split(" ");
+                                    if(searchable[0].equals("ORDER") && searchable[1].equals("BY")){
+                                        out = sortCountry(forPrintCountry,searchable[2]); 
+                                    }else {
+                                        throw new WrongFormatException("The format for sorting is invalid");
+                                    }
+                                }
+                                else if(searchable[8].equals("ORDER") && searchable[9].equals("BY")){
+                                    out = sortCountry(forPrintCountry,searchable[10]); 
+                                }else {
+                                    throw new WrongFormatException("The format for sorting is invalid");
+                                }
+                            }
+                            else if(searchable[4].equals("ORDER")&&searchable[5].equals("BY")){
+                                for(Map.Entry<String,Country> c : countries.entrySet()){
+                                    forPrintCountry.add(c.getValue());
+                                }
+                                out = sortCountry(forPrintCountry,searchable[6]);
+                            }
+                            else {
+                                throw new WrongFormatException("The format for sorting is invalid");
+                            }
+                        }
+                        else if(searchable[4].equals("WHERE")){
+                            throw new WrongFormatException("The format is wrong because is missing WHERE");
+                        }
+                        else {
+                            for(int i = 0;i<forPrintCountry.size();i++){
+                                out += forPrintCountry.get(i).toString()+"\n";
                             }
                         }
                     }else {
@@ -395,7 +326,7 @@ public class Control {
     public String sortCity(ArrayList<City> array,String parameter){
 
         String out = "";
-
+        System.out.println(parameter);
         switch (parameter){
             case ("population"):
                 array.sort(new Comparator<City>() {
@@ -748,7 +679,7 @@ public class Control {
         return cities.toString();
     }
 
-    
+
 
     //Json methods
 

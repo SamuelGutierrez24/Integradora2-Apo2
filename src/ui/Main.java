@@ -20,8 +20,8 @@ public class Main {
         System.out.println(control.toStringCities());
         control.add("INSERT INTO cities(id, name, countryID, population) VALUES ('PITO', 'Bogota', 'jijijaja', 2.5)");
         System.out.println(control.toStringCities());
-        control.delete("DELETE FROM cities WHERE id = 'jaja jiji'");
-        System.out.println(control.toStringCities());
+        /*control.delete("DELETE FROM cities WHERE id = 'jaja jiji'");
+        System.out.println(control.toStringCities());*/
     }
 
     public static void main(String []args){
@@ -110,6 +110,7 @@ public class Main {
                     "Delete ----> DELETE FROM countries WHERE id = '6ec3e8ec-3dd0-11ed-b878-0242ac120002'\n\n");
             command = sc.nextLine();
         }
+        System.out.println(command);
 
         if(command.contains("INSERT")){
             try {
@@ -127,15 +128,14 @@ public class Main {
             }
         }
 
-        /*
+        
         if(command.contains("SELECT")){
             try {
-                #Metodo organizar / filtrar
+                return control.search(command);
             }catch (Exception e){
                 return e.getMessage();
             }
         }
-         */
 
         return "Please check the tipping of your command";
     }
