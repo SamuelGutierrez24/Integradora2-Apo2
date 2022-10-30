@@ -2,9 +2,13 @@ package ui;
 
 import model.Control;
 
-import java.util.*;
+import javax.swing.*;
+import java.io.File;
+import java.util.InputMismatchException;
+import java.util.Scanner;
+import java.util.UUID;
 
-public class Main {
+public class Main extends JFrame{
     private Scanner sc;
     private Control control;
 
@@ -14,13 +18,13 @@ public class Main {
     }
 
     public void prueba(){
-        control.add("INSERT INTO countries(id, name, population, countryCode) VALUES ('jijijaja', 'Colombia', 50.2, '+57')");
+        /*control.add("INSERT INTO countries(id, name, population, countryCode) VALUES ('jijijaja', 'Colombia', 50.2, '+57')");
         System.out.println(control.toStringCountries());
         control.add("INSERT INTO cities(id, name, countryID, population) VALUES ('jaja jiji', 'Cali', 'jijijaja', 2.2)");
         System.out.println(control.toStringCities());
         control.add("INSERT INTO cities(id, name, countryID, population) VALUES ('PITO', 'Bogota', 'jijijaja', 2.5)");
         System.out.println(control.toStringCities());
-        /*control.delete("DELETE FROM cities WHERE id = 'jaja jiji'");
+        control.delete("DELETE FROM cities WHERE id = 'jaja jiji'");
         System.out.println(control.toStringCities());*/
     }
 
@@ -44,6 +48,14 @@ public class Main {
             }
         }while(option!=3);
 
+        main.save();
+
+    }
+
+    public void save(){
+        control.WriteCountriesJson();
+        control.WriteCitiesJson();
+        System.out.println("The data has been saved ;)");
     }
 
     public int showMenu(){
@@ -122,7 +134,7 @@ public class Main {
 
         if(command.contains("DELETE")){
             try {
-                control.add(command);
+                control.delete(command);
             }catch (Exception e){
                 return e.getMessage();
             }
@@ -141,14 +153,12 @@ public class Main {
     }
 
     public String pathSQL(){
-        String path;
-
-        System.out.println("Please insert the absolute path from your SQL\n\n");
-
-        path = sc.nextLine();
-
+        JFileChooser chooser = new JFileChooser();
+        chooser.showOpenDialog(null);
+        File file = chooser.getSelectedFile();
         try{
-            control.ReadSQLCommand(path);
+            control.ReadSQLCommand(file);
+            System.out.println(control.toStringCities());
             return "Data imported";
         }catch (Exception e){
             return e.getMessage();

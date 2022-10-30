@@ -1,7 +1,6 @@
 package model;
 
 import com.google.gson.Gson;
-
 import exceptions.EmptyDatabaseException;
 import exceptions.InvalidOperandException;
 import exceptions.NoSuchCountryException;
@@ -10,16 +9,35 @@ import exceptions.WrongFormatException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.concurrent.CyclicBarrier;
 
 public class Control {
     
     private HashMap<String,City> cities;
     private HashMap<String,Country> countries;
 
+    private static final String pathCi =".\\dataBase\\cities.txt";
+
+    private static final String pathCo =".\\dataBase\\countries.txt";
+
     public Control(){
         cities = new HashMap<>();
         countries = new HashMap<>();
+        try {
+            ArrayList<Country> countriesToAdd = ReadJsonContries();
+            for(Country c:countriesToAdd){
+                countries.put(c.getId(),c);
+            }
+            try{
+                ArrayList<City> citiesToAdd = ReadJsonCities();
+                for(City c:citiesToAdd){
+                    cities.put(c.getId(),c);
+                }
+            }catch (Exception e){
+
+            }
+        }catch (Exception e){
+
+        }
     }
 
 
@@ -683,9 +701,17 @@ public class Control {
 
     //Json methods
 
-    public void WriteCitiesJson(String path, ArrayList<City> toSave){
+    public void WriteCitiesJson(){
 
-        File file = new File(path);
+        ArrayList<City> toSave = new ArrayList<>();
+
+        Set<Map.Entry<String,City>> setToSave = cities.entrySet();
+
+        for(Map.Entry e:setToSave){
+            toSave.add((City) e.getValue());
+        }
+
+        File file = new File(pathCi);
 
         Gson gson = new Gson();
 
@@ -701,9 +727,17 @@ public class Control {
         }
     }
 
-    public void WriteCountriesJson(String path, ArrayList<Country> toSave){
+    public void WriteCountriesJson(){
 
-        File file = new File(path);
+        ArrayList<Country> toSave = new ArrayList<>();
+
+        Set<Map.Entry<String,Country>> setToSave = countries.entrySet();
+
+        for(Map.Entry e:setToSave){
+            toSave.add((Country) e.getValue());
+        }
+
+        File file = new File(pathCo);
 
         Gson gson = new Gson();
 
@@ -719,9 +753,9 @@ public class Control {
         }
     }
 
-    public ArrayList<City> ReadJsonCities(String path) {
+    public ArrayList<City> ReadJsonCities() {
         try {
-            File file = new File(path);
+            File file = new File(pathCi);
             FileInputStream fis = new FileInputStream(file);
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
@@ -742,13 +776,12 @@ public class Control {
             return sent;
 
         } catch (IOException e) {
-            e.printStackTrace();
         }
         return null;
     }
-    public ArrayList<Country> ReadJsonContries(String path) {
+    public ArrayList<Country> ReadJsonContries() {
         try {
-            File file = new File(path);
+            File file = new File(pathCo);
             FileInputStream fis = new FileInputStream(file);
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
@@ -769,16 +802,14 @@ public class Control {
             return sent;
 
         } catch (IOException e) {
-            e.printStackTrace();
         }
         return null;
     }
 
-    public void ReadSQLCommand(String path) throws Exception{
+    public void ReadSQLCommand(File file) throws Exception{
 
         ArrayList<String> commands = new ArrayList<>();
         try {
-            File file = new File(path);
             FileInputStream fis = new FileInputStream(file);
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(fis)
@@ -790,10 +821,32 @@ public class Control {
             fis.close();
 
             for(String s:commands){
-                try{
-                    add(s);
-                }catch (Exception e){
-                    throw new Exception("The command " + s + " execution went wrong, aborting operation");
+                if(s.contains("INSERT")){
+                    try {
+                        add(s);
+                    }catch (Exception e){
+                        System.out.println(e.getMessage());
+                        throw new Exception("The command " + s + " execution went wrong, aborting operation");
+                    }
+                }
+
+                if(s.contains("DELETE")){
+                    try {
+                        delete(s);
+                    }catch (Exception e){
+                        System.out.println(e.getMessage());
+                        throw new Exception("The command " + s + " execution went wrong, aborting operation");
+                    }
+                }
+
+
+                if(s.contains("SELECT")){
+                    try {
+                        search(s);
+                    }catch (Exception e){
+                        System.out.println(e.getMessage());
+                        throw new Exception("The command " + s + " execution went wrong, aborting operation");
+                    }
                 }
             }
 
