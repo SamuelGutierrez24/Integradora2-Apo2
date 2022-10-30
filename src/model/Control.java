@@ -1,10 +1,7 @@
 package model;
 
 import com.google.gson.Gson;
-import exceptions.EmptyDatabaseException;
-import exceptions.InvalidOperandException;
-import exceptions.NoSuchCountryException;
-import exceptions.WrongFormatException;
+import exceptions.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -88,7 +85,7 @@ public class Control {
 
 
 
-    public String search(String toSearch){
+    public String search(String toSearch)throws WrongFormatException, InvalidOperandException{
         String out = "";
         String [] searchable = toSearch.split(" ");
         String [] comillas = null;
@@ -848,6 +845,7 @@ public class Control {
                         throw new Exception("The command " + s + " execution went wrong, aborting operation");
                     }
                 }
+                throw new Exception("The command " + s + " execution went wrong, aborting operation");
             }
 
         } catch (IOException e) {
