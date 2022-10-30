@@ -46,39 +46,43 @@ public class Control {
     public void add(String toAdd) throws NoSuchCountryException, WrongFormatException{
         String[] checker = toAdd.replaceAll(",", "").split(" ");
         String[] addable = toAdd.contains("VALUES")?toAdd.split("VALUES"):null;
-        if (addable!=null&&checker[0].equals("INSERT")&&checker[1].equals("INTO")){
-            if(checker[2].split("\\(")[0].equals("countries")&&(checker[2].split("\\(")[1] + checker[3] + checker[4] +  checker[5].split("\\)")[0]).equals("idnamepopulationcountryCode")&&checker[6].equals("VALUES")){
-                boolean check = true;
-                String[] values = addable[1].split(",");
-                values[0] = values[0].replace("(", "");
-                for(int i=0; i<values.length; i++) values[i] = values[i].replace(")", "").replaceFirst(" ", "");
-                int i;
-                for( i=0; i<values.length&&(check=((values[i].startsWith("'")&&values[i].endsWith("'"))||i==2)); i++){
-                    values[i] = values[i].replaceAll("'", "");
+        try{
+            if (addable!=null&&checker[0].equals("INSERT")&&checker[1].equals("INTO")){
+                if(checker[2].split("\\(")[0].equals("countries")&&(checker[2].split("\\(")[1] + checker[3] + checker[4] +  checker[5].split("\\)")[0]).equals("idnamepopulationcountryCode")&&checker[6].equals("VALUES")){
+                    boolean check = true;
+                    String[] values = addable[1].split(",");
+                    values[0] = values[0].replace("(", "");
+                    for(int i=0; i<values.length; i++) values[i] = values[i].replace(")", "").replaceFirst(" ", "");
+                    int i;
+                    for( i=0; i<values.length&&(check=((values[i].startsWith("'")&&values[i].endsWith("'"))||i==2)); i++){
+                        values[i] = values[i].replaceAll("'", "");
+                    }
+                    if(check){
+                        countries.put(values[0], new Country(values[0], values[1], Double.parseDouble(values[2]), values[3]));
+                    }
+                    else throw new WrongFormatException("Invalid input for " + (values[i]) + ".");
                 }
-                if(check){
-                    countries.put(values[0], new Country(values[0], values[1], Double.parseDouble(values[2]), values[3]));
+                else if (checker[2].split("\\(")[0].equals("cities")&&(checker[2].split("\\(")[1] + checker[3] + checker[4] +  checker[5].split("\\)")[0]).equals("idnamecountryIDpopulation")&&checker[6].equals("VALUES")){
+                    boolean check = true;
+                    String[] values = addable[1].split(",");
+                    values[0] = values[0].replace("(", "");
+                    for (int i=0; i<values.length; i++) values[i] = values[i].replace(")", "").replaceFirst(" ", "");
+                    int i;
+                    for(i=0; i<values.length&&(check=((values[i].startsWith("'")&&values[i].endsWith("'"))||i==3)); i++){
+                        values[i] = values[i].replaceAll("'", "");
+                    }
+                    if(check){
+                        if(countries.containsKey(values[2])) cities.put(values[0], new City(values[0], values[1], values[2], Double.parseDouble(values[3])));
+                        else throw new NoSuchCountryException("The country id specified does not exist.");
+                    }
+                    else throw new WrongFormatException("Invalid input for " + (values[i]) + ".");
                 }
-                else throw new WrongFormatException("Invalid input for " + (values[i]) + ".");
+                else throw new WrongFormatException("Declaration of database to be updated is either incomplete or incorrect.");
             }
-            else if (checker[2].split("\\(")[0].equals("cities")&&(checker[2].split("\\(")[1] + checker[3] + checker[4] +  checker[5].split("\\)")[0]).equals("idnamecountryIDpopulation")&&checker[6].equals("VALUES")){
-                boolean check = true;
-                String[] values = addable[1].split(",");
-                values[0] = values[0].replace("(", "");
-                for (int i=0; i<values.length; i++) values[i] = values[i].replace(")", "").replaceFirst(" ", "");
-                int i;
-                for(i=0; i<values.length&&(check=((values[i].startsWith("'")&&values[i].endsWith("'"))||i==3)); i++){
-                    values[i] = values[i].replaceAll("'", "");
-                }
-                if(check){
-                    if(countries.containsKey(values[2])) cities.put(values[0], new City(values[0], values[1], values[2], Double.parseDouble(values[3])));
-                    else throw new NoSuchCountryException("The country id specified does not exist.");
-                }
-                else throw new WrongFormatException("Invalid input for " + (values[i]) + ".");
-            }
-            else throw new WrongFormatException("Declaration of database to be updated is either incomplete or incorrect.");
+            else throw new WrongFormatException("Unknown command.");
+        }catch(IndexOutOfBoundsException e){
+            throw new WrongFormatException("Unknown syntax.");
         }
-        else throw new WrongFormatException("Unknown command");
     }
 
 

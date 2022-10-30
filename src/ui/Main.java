@@ -112,8 +112,8 @@ public class Main extends JFrame{
 
         if(command.equalsIgnoreCase("help")){
             System.out.println("Examples of commands:\n"+
-                    "Insert --->  INSERT INTO countries (id, name, population, countryCode) VALUES ('6ec3e8ec-3dd0-11ed-b878-0242ac120002', 'Colombia', 50.2, '+57')\n\n"+
-                    "Insert --->  INSERT INTO cities (id, name, countryID, population) VALUES ('e4aa04f6-3dd0-11ed-b878-0242ac120002', 'Cali', '6ec3e8ec-3dd0-11ed-b878-0242ac120002', 2.2)\n\n"+
+                    "Insert --->  INSERT INTO countries(id, name, population, countryCode) VALUES ('6ec3e8ec-3dd0-11ed-b878-0242ac120002', 'Colombia', 50.2, '+57')\n\n"+
+                    "Insert --->  INSERT INTO cities(id, name, countryID, population) VALUES ('e4aa04f6-3dd0-11ed-b878-0242ac120002', 'Cali', '6ec3e8ec-3dd0-11ed-b878-0242ac120002', 2.2)\n\n"+
                     "Search/Filter ----> SELECT * FROM cities WHERE name = 'Colombia'\n\n"+
                     "Search/Filter ----> SELECT * FROM countries WHERE population > 100\n\n"+
                     "Order ----> SELECT * FROM countries WHERE population > 100 ORDER BY name\n\n"+
@@ -122,11 +122,11 @@ public class Main extends JFrame{
                     "Delete ----> DELETE FROM countries WHERE id = '6ec3e8ec-3dd0-11ed-b878-0242ac120002'\n\n");
             command = sc.nextLine();
         }
-        System.out.println(command);
 
         if(command.contains("INSERT")){
             try {
                 control.add(command);
+                return "Succesfully addded.";
             }catch (Exception e){
                 return e.getMessage();
             }
@@ -135,6 +135,7 @@ public class Main extends JFrame{
         if(command.contains("DELETE")){
             try {
                 control.delete(command);
+                return "Succesfully deleted.";
             }catch (Exception e){
                 return e.getMessage();
             }
