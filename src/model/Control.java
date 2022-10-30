@@ -193,7 +193,7 @@ public class Control {
                                 throw new WrongFormatException("The format for sorting is invalid");
                             }
                         }
-                        else if(searchable[4].equals("WHERE")){
+                        else if(!searchable[4].equals("WHERE")){
                             throw new WrongFormatException("The format is wrong because is missing WHERE");
                         }
                         else {
@@ -310,7 +310,7 @@ public class Control {
                                 throw new WrongFormatException("The format for sorting is invalid");
                             }
                         }
-                        else if(searchable[4].equals("WHERE")){
+                        else if(!searchable[4].equals("WHERE")){
                             throw new WrongFormatException("The format is wrong because is missing WHERE");
                         }
                         else {

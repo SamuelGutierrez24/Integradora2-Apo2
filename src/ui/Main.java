@@ -112,8 +112,8 @@ public class Main extends JFrame{
 
         if(command.equalsIgnoreCase("help")){
             System.out.println("Examples of commands:\n"+
-                    "Insert --->  INSERT INTO countries(id, name, population, countryCode) VALUES ('6ec3e8ec-3dd0-11ed-b878-0242ac120002', 'Colombia', 50.2, '+57')\n\n"+
-                    "Insert --->  INSERT INTO cities(id, name, countryID, population) VALUES ('e4aa04f6-3dd0-11ed-b878-0242ac120002', 'Cali', '6ec3e8ec-3dd0-11ed-b878-0242ac120002', 2.2)\n\n"+
+                    "Insert --->  INSERT INTO countries (id, name, population, countryCode) VALUES ('6ec3e8ec-3dd0-11ed-b878-0242ac120002', 'Colombia', 50.2, '+57')\n\n"+
+                    "Insert --->  INSERT INTO cities (id, name, countryID, population) VALUES ('e4aa04f6-3dd0-11ed-b878-0242ac120002', 'Cali', '6ec3e8ec-3dd0-11ed-b878-0242ac120002', 2.2)\n\n"+
                     "Search/Filter ----> SELECT * FROM cities WHERE name = 'Colombia'\n\n"+
                     "Search/Filter ----> SELECT * FROM countries WHERE population > 100\n\n"+
                     "Order ----> SELECT * FROM countries WHERE population > 100 ORDER BY name\n\n"+
