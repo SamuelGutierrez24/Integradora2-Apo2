@@ -521,6 +521,7 @@ public class Control {
                 
                 
                 case("cities"):
+                    if(cities.isEmpty()) throw new EmptyDatabaseException("No cities to delte from.");
                     ArrayList<City> toDelete = new ArrayList<>();
                     switch(checker[4]){
 
@@ -565,7 +566,7 @@ public class Control {
 
 
                         case("population"):
-                            if(deleteable.length>1){
+                            if(deleteable.length==1){
                                 switch(checker[5]){
                                     case("="):
                                         for (Map.Entry<String,City> c : cities.entrySet()){
@@ -589,13 +590,25 @@ public class Control {
                             else throw new WrongFormatException("Invalid input for field 'population'.");
                             break;
 
+                        case("countryID"):
+                            if(deleteable.length==3){
+                                if(checker[5].equals("=")){
+                                    for (Map.Entry<String,City> c : cities.entrySet()){
+                                        if(c.getValue().getCountryId().equals(deleteable[1])) toDelete.add(c.getValue());
+                                    }
+                                }
+                                else throw new InvalidOperandException("The operand " + checker[5] + "  cannot apply to " + checker[4] + ".");                               
+                            }
+                            else throw new WrongFormatException("Invalid input for field 'name'.");
+                            break;
 
                         default:
                             throw new WrongFormatException("The specified field does not match expected values.");
                     }
                     try{
+                        if(toDelete.isEmpty()) throw new NullPointerException();
                         for(City c : toDelete){
-                            cities.remove(c.getId(),c);
+                            cities.remove(c.getId());
                         }
                     }
                     catch(NullPointerException e){
@@ -607,11 +620,12 @@ public class Control {
 
 
                 case ("countries"):
+                    if(countries.isEmpty()) throw new EmptyDatabaseException("No countries to delete from");
                     ArrayList<Country> toDelete2 = new ArrayList<>(); 
                     switch(checker[4]){
                         case("id"):
                             if(deleteable.length==3){
-                                if(checker[5].equals("=")) toDelete2.add(countries.get(checker[6]));
+                                if(checker[5].equals("=")) toDelete2.add(countries.get(deleteable[1]));
                                 else throw new InvalidOperandException("The operand " + checker[5] + "  cannot apply to " + checker[4] + ".");
                             }
                             else throw new WrongFormatException("Invalid input for field 'id'.");
@@ -621,7 +635,7 @@ public class Control {
                                 if(checker[5].equals("=")){
 
                                     for (Map.Entry<String,Country> c : countries.entrySet()){
-                                        if(c.getValue().getName().equals(checker[6].replaceAll("'", ""))) toDelete2.add(c.getValue());
+                                        if(c.getValue().getName().equals(deleteable[1])) toDelete2.add(c.getValue());
                                     }
 
                                 }
@@ -629,12 +643,12 @@ public class Control {
                             }
                             else throw new WrongFormatException("Invalid input for field 'name'.");
                             break;
-                        case("coutryCode"):
+                        case("countryCode"):
                             if(deleteable.length==3){
                                 if(checker[5].equals("=")){
 
                                     for (Map.Entry<String,Country> c : countries.entrySet()){
-                                        if(c.getValue().getCountryCode().equals(checker[6].replaceAll("'", ""))) toDelete2.add(c.getValue());
+                                        if(c.getValue().getCountryCode().equals(deleteable[1])) toDelete2.add(c.getValue());
                                     }
 
                                 }
@@ -643,7 +657,7 @@ public class Control {
                             else throw new WrongFormatException("Invalid inpit for field 'countryCode'.");
                             break;
                         case("population"):
-                            if(deleteable.length>1){
+                            if(deleteable.length==1){
                                 switch(checker[5]){
                                     case("="):
                                         for (Map.Entry<String,Country> c : countries.entrySet()){
@@ -670,8 +684,16 @@ public class Control {
                             throw new WrongFormatException("The specified field does not match expected values.");
                     }
                     try{
+                        if(toDelete2.isEmpty()) throw new NullPointerException();
                         for(Country c : toDelete2){
-                            cities.remove(c.getId(),c);
+                            countries.remove(c.getId(),c);
+                            ArrayList<City> cty = new ArrayList<>();
+                            for (Map.Entry<String,City> ct : cities.entrySet()){
+                                if(ct.getValue().getCountryId().equals(c.getId())) cty.add(ct.getValue());
+                            }
+                            for (City ct : cty){
+                                cities.remove(ct.getId());
+                            }
                         }
                     }
                     catch(NullPointerException e){
@@ -708,7 +730,7 @@ public class Control {
 
         Set<Map.Entry<String,City>> setToSave = cities.entrySet();
 
-        for(Map.Entry e:setToSave){
+        for(Map.Entry<String,City> e:setToSave){
             toSave.add((City) e.getValue());
         }
 
@@ -734,7 +756,7 @@ public class Control {
 
         Set<Map.Entry<String,Country>> setToSave = countries.entrySet();
 
-        for(Map.Entry e:setToSave){
+        for(Map.Entry<String,Country> e:setToSave){
             toSave.add((Country) e.getValue());
         }
 
@@ -849,7 +871,6 @@ public class Control {
                         throw new Exception("The command " + s + " execution went wrong, aborting operation");
                     }
                 }
-                throw new Exception("The command " + s + " execution went wrong, aborting operation");
             }
 
         } catch (IOException e) {
