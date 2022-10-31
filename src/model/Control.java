@@ -353,15 +353,10 @@ public class Control {
                 array.sort(new Comparator<City>() {
                     @Override
                     public int compare(City o1, City o2) {
-                        if(o1.getPopulation()>o2.getPopulation()){
-                            return 1;
-                        }else if (o1.getPopulation()<o2.getPopulation()){
-                            return -1;
-                        }else
-                            return 0;
+                        return (int)Math.ceil(o1.getPopulation() - o2.getPopulation());
                     }
                 });
-                Collections.reverse(array);
+
                 for(int i = 0;i<array.size();i++){
                     out += array.get(i).getName() +"  population: " + array.get(i).getPopulation();
                 }
@@ -370,15 +365,9 @@ public class Control {
                 array.sort(new Comparator<City>() {
                     @Override
                     public int compare(City o1, City o2) {
-                        if(o1.getName().compareTo(o2.getName())>0){
-                            return 1;
-                        }else if (o1.getName().compareTo(o2.getName())<0){
-                            return -1;
-                        }else
-                            return 0;
+                        return o1.getName().compareTo(o2.getName());
                     }
                 });
-                Collections.reverse(array);
                 for(int i = 0;i<array.size();i++){
                     out += array.get(i).getName();
                 }
@@ -387,15 +376,9 @@ public class Control {
                 array.sort(new Comparator<City>() {
                     @Override
                     public int compare(City o1, City o2) {
-                        if(o1.getId().compareTo(o2.getId())>0){
-                            return 1;
-                        }else if (o1.getId().compareTo(o2.getId())<0){
-                            return -1;
-                        }else
-                            return 0;
+                        return o1.getId().compareTo(o2.getId());
                     }
                 });
-                Collections.reverse(array);
                 for(int i = 0;i<array.size();i++){
                     out += array.get(i).getName() + " id :" + array.get(i).getId();
                 }
@@ -403,15 +386,9 @@ public class Control {
                 array.sort(new Comparator<City>() {
                     @Override
                     public int compare(City o1, City o2) {
-                        if(o1.getCountryId().compareTo(o2.getCountryId())>0){
-                            return 1;
-                        }else if (o1.getCountryId().compareTo(o2.getCountryId())<0){
-                            return -1;
-                        }else
-                            return 0;
+                        return o1.getCountryId().compareTo(o2.getCountryId());
                     }
                 });
-                Collections.reverse(array);
                 for(int i = 0;i<array.size();i++){
                     out += array.get(i).getName() + " id :" + array.get(i).getCountryId();
                 }
@@ -434,15 +411,9 @@ public class Control {
                 array.sort(new Comparator<Country>() {
                     @Override
                     public int compare(Country o1, Country o2) {
-                        if(o1.getPopulation()>o2.getPopulation()){
-                            return 1;
-                        }else if (o1.getPopulation()<o2.getPopulation()){
-                            return -1;
-                        }else
-                            return 0;
+                        return (int)Math.ceil(o1.getPopulation() - o2.getPopulation());
                     }
                 });
-                Collections.reverse(array);
                 for(int i = 0;i<array.size();i++){
                     out += array.get(i).getName() +"  population: " + array.get(i).getPopulation();
                 }
@@ -451,15 +422,9 @@ public class Control {
                 array.sort(new Comparator<Country>() {
                     @Override
                     public int compare(Country o1, Country o2) {
-                        if(o1.getName().compareTo(o2.getName())>0){
-                            return 1;
-                        }else if (o1.getName().compareTo(o2.getName())<0){
-                            return -1;
-                        }else
-                            return 0;
+                        return o1.getName().compareTo(o2.getName());
                     }
                 });
-                Collections.reverse(array);
                 for(int i = 0;i<array.size();i++){
                     out += array.get(i).getName();
                 }
@@ -468,15 +433,9 @@ public class Control {
                 array.sort(new Comparator<Country>() {
                     @Override
                     public int compare(Country o1, Country o2) {
-                        if(o1.getId().compareTo(o2.getId())>0){
-                            return 1;
-                        }else if (o1.getId().compareTo(o2.getId())<0){
-                            return -1;
-                        }else
-                            return 0;
+                        return o1.getId().compareTo(o2.getId());
                     }
                 });
-                Collections.reverse(array);
                 for(int i = 0;i<array.size();i++){
                     out += array.get(i).getName() + " id :" + array.get(i).getId();
                 }
@@ -484,15 +443,9 @@ public class Control {
                 array.sort(new Comparator<Country>() {
                     @Override
                     public int compare(Country o1, Country o2) {
-                        if(o1.getCountryCode().compareTo(o2.getCountryCode())>0){
-                            return 1;
-                        }else if (o1.getCountryCode().compareTo(o2.getCountryCode())<0){
-                            return -1;
-                        }else
-                            return 0;
+                        return o1.getCountryCode().compareTo(o2.getCountryCode());
                     }
                 });
-                Collections.reverse(array);
                 for(int i = 0;i<array.size();i++){
                     out += array.get(i).getName() + " id :" + array.get(i).getCountryCode();
                 }
