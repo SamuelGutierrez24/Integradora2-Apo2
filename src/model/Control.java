@@ -7,6 +7,8 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+import javax.lang.model.util.ElementScanner14;
+
 public class Control {
     
     private HashMap<String,City> cities;
@@ -877,6 +879,39 @@ public class Control {
 
         }
 
+    }
+
+    public HashMap<String, City> getCities() {
+        return cities;
+    }
+    public HashMap<String, Country> getCountries() {
+        return countries;
+    }
+
+    public boolean searchBool(String toSearch){
+        boolean out = false;
+        String [] searchable = toSearch.split(" ");
+
+        if(searchable[3].equals("countries")){
+            String [] comillas = toSearch.split("'");
+            for(Map.Entry<String,Country> c : countries.entrySet()){
+                if(c.getValue().getName().equals(comillas[1])){
+                    out = true;
+                }
+            }
+        }else if(searchable[3].equals("cities")){
+            String [] comillas = toSearch.split("'");
+            for(Map.Entry<String,City> c : cities.entrySet()){
+                if(c.getValue().getName().equals(comillas[1])){
+                    out = true;
+                }
+            }
+        }else{
+            out = false;
+        }
+
+
+        return out;
     }
     
 }
