@@ -20,12 +20,12 @@ public class Control {
         cities = new HashMap<>();
         countries = new HashMap<>();
         try {
-            ArrayList<Country> countriesToAdd = ReadJsonContries();
+            ArrayList<Country> countriesToAdd = readJsonContries();
             for(Country c:countriesToAdd){
                 countries.put(c.getId(),c);
             }
             try{
-                ArrayList<City> citiesToAdd = ReadJsonCities();
+                ArrayList<City> citiesToAdd = readJsonCities();
                 for(City c:citiesToAdd){
                     cities.put(c.getId(),c);
                 }
@@ -677,7 +677,7 @@ public class Control {
 
     //Json methods
 
-    public void WriteCitiesJson(){
+    public void writeCitiesJson(){
 
         ArrayList<City> toSave = new ArrayList<>();
 
@@ -703,7 +703,7 @@ public class Control {
         }
     }
 
-    public void WriteCountriesJson(){
+    public void writeCountriesJson(){
 
         ArrayList<Country> toSave = new ArrayList<>();
 
@@ -729,7 +729,7 @@ public class Control {
         }
     }
 
-    public ArrayList<City> ReadJsonCities() {
+    public ArrayList<City> readJsonCities() {
         try {
             File file = new File(pathCi);
             FileInputStream fis = new FileInputStream(file);
@@ -755,7 +755,7 @@ public class Control {
         }
         return null;
     }
-    public ArrayList<Country> ReadJsonContries() {
+    public ArrayList<Country> readJsonContries() {
         try {
             File file = new File(pathCo);
             FileInputStream fis = new FileInputStream(file);
@@ -782,7 +782,7 @@ public class Control {
         return null;
     }
 
-    public void ReadSQLCommand(File file) throws Exception{
+    public void readSQLCommand(File file) throws Exception{
 
         ArrayList<String> commands = new ArrayList<>();
         try {

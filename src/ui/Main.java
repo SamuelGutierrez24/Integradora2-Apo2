@@ -53,8 +53,8 @@ public class Main extends JFrame{
     }
 
     public void save(){
-        control.WriteCountriesJson();
-        control.WriteCitiesJson();
+        control.writeCountriesJson();
+        control.writeCitiesJson();
         System.out.println("The data has been saved ;)");
     }
 
@@ -158,7 +158,7 @@ public class Main extends JFrame{
         chooser.showOpenDialog(null);
         File file = chooser.getSelectedFile();
         try{
-            control.ReadSQLCommand(file);
+            control.readSQLCommand(file);
             System.out.println(control.toStringCities());
             return "Data imported";
         }catch (Exception e){
