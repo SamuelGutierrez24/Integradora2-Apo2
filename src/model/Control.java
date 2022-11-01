@@ -7,8 +7,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import javax.lang.model.util.ElementScanner14;
-
 public class Control {
     
     private HashMap<String,City> cities;
@@ -22,7 +20,7 @@ public class Control {
         cities = new HashMap<>();
         countries = new HashMap<>();
         try {
-            ArrayList<Country> countriesToAdd = readJsonContries();
+            ArrayList<Country> countriesToAdd = readJsonCountries();
             for(Country c:countriesToAdd){
                 countries.put(c.getId(),c);
             }
@@ -757,7 +755,7 @@ public class Control {
         }
         return null;
     }
-    public ArrayList<Country> readJsonContries() {
+    public ArrayList<Country> readJsonCountries() {
         try {
             File file = new File(pathCo);
             FileInputStream fis = new FileInputStream(file);
@@ -804,6 +802,7 @@ public class Control {
                         add(s);
                     }catch (Exception e){
                         System.out.println(e.getMessage());
+                        reader.close();
                         throw new Exception("The command " + s + " execution went wrong, aborting operation");
                     }
                 }
@@ -813,6 +812,7 @@ public class Control {
                         delete(s);
                     }catch (Exception e){
                         System.out.println(e.getMessage());
+                        reader.close();
                         throw new Exception("The command " + s + " execution went wrong, aborting operation");
                     }
                 }
@@ -823,6 +823,7 @@ public class Control {
                         search(s);
                     }catch (Exception e){
                         System.out.println(e.getMessage());
+                        reader.close();
                         throw new Exception("The command " + s + " execution went wrong, aborting operation");
                     }
                 }
