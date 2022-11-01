@@ -49,7 +49,7 @@ public class Country {
 
     @Override
     public String toString() {
-        return "ID: " + id + "\nName: " + name + "\nCountry code: " + countryCode + "\nPopulation: " + population;
+        return "ID: " + id + "\nName: " + name + "\nCountry code: " + countryCode + "\nPopulation: " + population + "\n\n";
     }
 
 }
