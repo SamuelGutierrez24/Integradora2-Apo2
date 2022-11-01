@@ -155,7 +155,7 @@ public class Control {
                                         throw new WrongFormatException("The value of " + searchable[6] + " is invalid for the variable name");
                                     }
                                 break;
-                                case ("countryId"):
+                                case ("countryID"):
                                     if(searchable[6].equals("=")){
                                         comillas = toSearch.split("'");
                                         for(Map.Entry<String,City> c : cities.entrySet()){
@@ -172,11 +172,12 @@ public class Control {
                             }                            
                         }
                         if(toSearch.contains("ORDER BY")){
-                            if(searchable.length>=11){
+                            if(searchable.length>=10){
                                 if(comillas!=null&&comillas.length==3){
                                     searchable = comillas[2].split(" ");
-                                    if(searchable[0].equals("ORDER") && searchable[1].equals("BY")){
-                                        out = sortCity(forPrintCity,searchable[2]); 
+                                    System.out.println(Arrays.toString(searchable));
+                                    if(searchable[1].equals("ORDER") && searchable[2].equals("BY")){
+                                        out = sortCity(forPrintCity,searchable[3]); 
                                     }else {
                                         throw new WrongFormatException("The format for sorting is invalid");
                                     }
@@ -363,7 +364,7 @@ public class Control {
                 array.sort(new Comparator<City>() {
                     @Override
                     public int compare(City o1, City o2) {
-                        return o1.getName().compareTo(o2.getName());
+                        return o1.getName().compareToIgnoreCase(o2.getName());
                     }
                 });
                 for(int i = 0;i<array.size();i++){
@@ -374,17 +375,17 @@ public class Control {
                 array.sort(new Comparator<City>() {
                     @Override
                     public int compare(City o1, City o2) {
-                        return o1.getId().compareTo(o2.getId());
+                        return o1.getId().compareToIgnoreCase(o2.getId());
                     }
                 });
                 for(int i = 0;i<array.size();i++){
                     out += array.get(i).getName() + " id :" + array.get(i).getId();
                 }
-            case ("countryId"):
+            case ("countryID"):
                 array.sort(new Comparator<City>() {
                     @Override
                     public int compare(City o1, City o2) {
-                        return o1.getCountryId().compareTo(o2.getCountryId());
+                        return o1.getCountryId().compareToIgnoreCase(o2.getCountryId());
                     }
                 });
                 for(int i = 0;i<array.size();i++){
@@ -409,7 +410,7 @@ public class Control {
                 array.sort(new Comparator<Country>() {
                     @Override
                     public int compare(Country o1, Country o2) {
-                        return (int)Math.ceil(o1.getPopulation() - o2.getPopulation());
+                        return (int)Math.ceil(o2.getPopulation() - o1.getPopulation());
                     }
                 });
                 for(int i = 0;i<array.size();i++){
@@ -420,7 +421,7 @@ public class Control {
                 array.sort(new Comparator<Country>() {
                     @Override
                     public int compare(Country o1, Country o2) {
-                        return o1.getName().compareTo(o2.getName());
+                        return o1.getName().compareToIgnoreCase(o2.getName());
                     }
                 });
                 for(int i = 0;i<array.size();i++){
@@ -431,7 +432,7 @@ public class Control {
                 array.sort(new Comparator<Country>() {
                     @Override
                     public int compare(Country o1, Country o2) {
-                        return o1.getId().compareTo(o2.getId());
+                        return o1.getId().compareToIgnoreCase(o2.getId());
                     }
                 });
                 for(int i = 0;i<array.size();i++){
@@ -441,7 +442,7 @@ public class Control {
                 array.sort(new Comparator<Country>() {
                     @Override
                     public int compare(Country o1, Country o2) {
-                        return o1.getCountryCode().compareTo(o2.getCountryCode());
+                        return o1.getCountryCode().compareToIgnoreCase(o2.getCountryCode());
                     }
                 });
                 for(int i = 0;i<array.size();i++){
