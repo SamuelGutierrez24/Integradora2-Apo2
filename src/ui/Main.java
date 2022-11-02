@@ -84,6 +84,7 @@ public class Main extends JFrame{
             default:
                 break;
         }
+        save();
 
     }
 

@@ -1,7 +1,10 @@
 package Test;
 
+import static org.junit.Assert.assertThrows;
+
 import org.junit.Test;
 
+import exceptions.NoSuchCountryException;
 import junit.framework.TestCase;
 import model.*;
 
@@ -40,6 +43,7 @@ public class TestDataBase extends TestCase {
         
     }
 
+    @Test
     public void testDelete(){
         setUpStage1();
         control.add("INSERT INTO countries(id, name, population, countryCode) VALUES ('arepa', 'Colombia', 50.2, '+57')");
@@ -85,6 +89,8 @@ public class TestDataBase extends TestCase {
         City citi = control.getCities().get("Narcos");
         assertEquals( citi,null);
     }
+
+    @Test
     public void testSearch(){
         setUpStage1();
         control.add("INSERT INTO countries(id, name, population, countryCode) VALUES ('taco', 'Mexico', 100.14, '+52')");
@@ -93,6 +99,17 @@ public class TestDataBase extends TestCase {
         assertEquals(ans, true);
         
     }
-    
+
+    @Test
+    public void testInsertException(){
+        setUpStage1();
+        try {
+            control.add("INSERT INTO cities(id, name, countryID, population) VALUES ('Narcos', 'Pipipupu', 'taco', 4.2)");
+        } catch (NoSuchCountryException e) {
+            //Check the type of the exception is the one we're looking for
+            assertEquals(NoSuchCountryException.class, e.getClass());
+        }
+        
+    }
     
 }

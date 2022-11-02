@@ -325,8 +325,9 @@ public class Control {
                         }
                     }else {
                         //show every country
+                        out += "\n";
                         for(Map.Entry<String,Country> c : countries.entrySet()){
-                            out += c.getValue().toString() + "\n";
+                            out += "\n" + c.getValue().toString() + "\n";
                         }
                     }
                 break;
@@ -352,12 +353,12 @@ public class Control {
                 array.sort(new Comparator<City>() {
                     @Override
                     public int compare(City o1, City o2) {
-                        return (int)Math.ceil(o1.getPopulation() - o2.getPopulation());
+                        return (int)Math.ceil(o2.getPopulation() - o1.getPopulation());
                     }
                 });
-
+                out += "\n";
                 for(int i = 0;i<array.size();i++){
-                    out += array.get(i).getName() +"  population: " + array.get(i).getPopulation();
+                    out += "\n" + array.get(i).toString() + "\n";
                 }
             break;
             case ("name"):
@@ -367,8 +368,9 @@ public class Control {
                         return o1.getName().compareToIgnoreCase(o2.getName());
                     }
                 });
+                out += "\n";
                 for(int i = 0;i<array.size();i++){
-                    out += array.get(i).getName();
+                    out += "\n" + array.get(i).toString() + "\n";
                 }
                 break;
             case ("id"):
@@ -378,8 +380,9 @@ public class Control {
                         return o1.getId().compareToIgnoreCase(o2.getId());
                     }
                 });
+                out += "\n";
                 for(int i = 0;i<array.size();i++){
-                    out += array.get(i).getName() + " id :" + array.get(i).getId();
+                    out += "\n" + array.get(i).toString() + "\n";
                 }
             case ("countryID"):
                 array.sort(new Comparator<City>() {
@@ -388,8 +391,9 @@ public class Control {
                         return o1.getCountryId().compareToIgnoreCase(o2.getCountryId());
                     }
                 });
+                out += "\n";
                 for(int i = 0;i<array.size();i++){
-                    out += array.get(i).getName() + " id :" + array.get(i).getCountryId();
+                    out += "\n" + array.get(i).toString() + "\n";
                 }
             break;
             default:
