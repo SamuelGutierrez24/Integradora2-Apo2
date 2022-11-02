@@ -55,7 +55,7 @@ public class Main extends JFrame{
     public void save(){
         control.writeCountriesJson();
         control.writeCitiesJson();
-        System.out.println("The data has been saved ;)");
+        
     }
 
     public int showMenu(){
@@ -64,9 +64,14 @@ public class Main extends JFrame{
                 "(1)- - - - Insert Command - - - - \n"+
                 "(2)- - - - Import from SQL - - - -\n"+
                 "(3)- - - - - - Exit - - - - - - -");
-        int option = sc.nextInt();
-        sc.nextLine();
-        return option;
+                try {
+                    int option =Integer.parseInt(sc.nextLine());
+                    return option;
+                } catch (Exception e) {
+                    return -1;
+                }
+        
+        
     }
 
     public void executeOperation(int option){
