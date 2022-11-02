@@ -1,7 +1,5 @@
 package Test;
 
-import static org.junit.Assert.assertThrows;
-
 import org.junit.Test;
 
 import exceptions.NoSuchCountryException;

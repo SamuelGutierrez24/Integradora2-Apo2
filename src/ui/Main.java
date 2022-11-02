@@ -95,8 +95,6 @@ public class Main extends JFrame{
 
     public String insertCommand(){
 
-        String out="";
-
         String command="";
 
         System.out.println("Please insert a command\n\n"+
