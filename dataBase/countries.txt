@@ -1,1 +1,1 @@
-[{"id":"buenosAires","name":"argentina","countryCode":"+52","population":500.2}]
+[]
